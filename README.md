@@ -16,6 +16,13 @@ Kéo ngón tay hoặc WASD/mũi tên để di chuyển · võ công tự đánh 
 `index.html`, `admin-dai-viet.html`, `manifest.webmanifest`, `assets/` (ảnh), `icons/`.
 Game thủ thành Hoa Lư cũ (js/, css/, shared/, admin/, test/, vendor/) đã được gỡ bỏ.
 
+## v2.1.0 — HOME / Bản đồ chương / Nhiệm vụ / Sự kiện
+- HOME mobile: avatar+EXP, vàng/kim cương/thể lực, Hero động giữa màn hình (idle, aura, hạt sáng, bóng; bấm để ra đòn), icon hoạt động có badge đỏ, nút CHIẾN ĐẤU, thanh điều hướng dưới.
+- Bản đồ 6 chương (Hoa Lư → Tây Đô), mỗi chương 6–7 node: Thường ⚔ / Elite ⭐ / Kho báu 🎁 / Sự kiện 🔥 / Boss 👹. Khoá tuần tự, hạ Boss mở chương kế. Mỗi loại màn có luật thắng riêng.
+- Nhiệm vụ: Chính (theo chương) / Ngày / Tuần / Thành tựu, nút ĐI TỚI, hoạt lực + mốc thưởng.
+- Sự kiện: banner + đếm ngược, tab Tổng quan/Nhiệm vụ/Phần thưởng/BXH, Hoa Lư Token + đổi quà, Boss thế giới Hắc Long.
+- Save: `sv.v` = 3, tự migrate (chương đã mở được đánh dấu hoàn thành).
+
 ## Thay đổi v2.0.0
 - Gỡ toàn bộ game thủ thành; bỏ liên kết vòng về chính `index.html`.
 - Sửa link Admin → game (trỏ tới file không tồn tại).
