@@ -1,0 +1,93 @@
+<!DOCTYPE html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Admin · Đại Việt Chạy Đi</title>
+<style>
+:root{--g:#e8b84a;--bg:#0b1020;--p:#141a3c;--l:#3b4468}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#f3e3b8;font:14px/1.4 'Noto Serif',Georgia,serif;padding:env(safe-area-inset-top) 10px 40px}
+h1{font-size:18px;color:#ffd978;margin:12px 0 6px}a{color:var(--g)}
+nav{display:flex;gap:6px;overflow-x:auto;padding:6px 0;position:sticky;top:0;background:var(--bg);z-index:2}
+nav b{flex:none;padding:8px 12px;border:1px solid var(--l);border-radius:6px;background:#10163a;cursor:pointer;font-size:13px}
+nav b.on{background:linear-gradient(#ffe48f,#c98d1c);color:#3a2300}
+.c{background:var(--p);border:1px solid var(--l);border-radius:10px;padding:10px;margin:8px 0}
+.c h3{margin:0 0 6px;font-size:14px;color:#ffd978}
+.f{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:6px}
+label{font-size:11px;opacity:.85;display:block}
+input,select,textarea{width:100%;background:#080c1e;color:#f3e3b8;border:1px solid var(--l);border-radius:5px;padding:6px;font:inherit}
+input[type=checkbox]{width:auto}textarea{font:12px monospace;min-height:70px}
+button{font:inherit;cursor:pointer;border-radius:6px;border:1px solid #fff1b8;background:linear-gradient(#ffe48f,#c98d1c);color:#3a2300;font-weight:700;padding:8px 14px;margin:6px 6px 0 0}
+button.d{background:#3a1018;color:#ffb0a8;border-color:#a33}
+.bp{display:grid;grid-template-columns:34px repeat(6,1fr);gap:3px;align-items:center;font-size:11px;margin-bottom:3px}.bp input{padding:3px}
+.w{color:#ff7a6a;font-size:12px}#ts{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#1c3a22;border:1px solid #7ac36a;padding:8px 16px;border-radius:8px;opacity:0;pointer-events:none;transition:.3s}#ts.on{opacity:1}
+</style></head><body>
+<h1>⚙ Admin · Đại Việt Chạy Đi <a href="index.html" style="font-size:12px;float:right">← Về game</a></h1>
+<nav id="nv"></nav><main id="mn"></main><div id="ts"></div>
+<script>
+const ymd=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'),MS=()=>{const d=new Date();d.setDate(1);return ymd(d)},ME=()=>{const d=new Date();return ymd(new Date(d.getFullYear(),d.getMonth()+1,0))};
+const $=s=>document.querySelector(s),L=k=>{try{return JSON.parse(localStorage.getItem(k))||{}}catch(e){return{}}},S=(k,v)=>localStorage.setItem(k,JSON.stringify(v)),
+esc=s=>String(s??'').replace(/"/g,'&quot;').replace(/</g,'&lt;'),toast=t=>{const e=$('#ts');e.textContent=t;e.className='on';setTimeout(()=>e.className='',1800)},
+V=e=>e.type==='checkbox'?+e.checked:e.type==='number'?+e.value||0:e.value;
+const QL=['C','B','A','S','SS','SSR'],SKN={kiem:'Kiếm Khí',loi:'Lôi Động',hang:'Hàng Long Chưởng',phi:'Phi Kiếm'};
+const HB=[['dbl','Đinh Bộ Lĩnh','A',0,.05,0,0,0,0,0],['lh','Lê Hoàn','S',60,0,0,0,3000,0,0],['nq','Ngô Quyền','SS',20,.05,.12,0,6000,0,0],['thd','Trần Hưng Đạo','SSR',0,.12,0,.12,0,200,0],['dl','Đinh Liễn','C',10,.02,.02,0,0,0,1],['nb','Nguyễn Bặc','B',35,.03,0,.02,0,0,1],['ltk','Lý Thường Kiệt','SSR',30,.1,.05,.15,0,0,1]].map(a=>({id:a[0],n:a[1],q:a[2],hp:a[3],am:a[4],sp:a[5],cr:a[6],g:a[7],m:a[8],gc:a[9]}));
+const EB=[
+{id:'lg',n:'Đăng nhập 7 ngày',e:'2027-12-31',x:{rw:[{g:500},{m:10},{t:10},{g:1000},{m:20},{t:30},{m:60,g:2000}]}},
+{id:'wb',n:'Boss thế giới',e:ME(),x:{pool:3e6,tl:90,ms:[[20000,{g:1000}],[100000,{m:40}],[400000,{m:120,t:50}]]}},
+{id:'wh',n:'Vòng quay may mắn',e:'2027-12-31',x:{}},
+{id:'sm',n:'Triệu hồi tướng',e:'2027-12-31',x:{ms:[[5,{m:20}],[20,{m:60}],[50,{m:150}]]}},
+{id:'col',n:'Thu thập vàng',e:'2027-12-31',x:{ms:[[100,{g:300}],[400,{g:800,t:10}],[1000,{m:30}]]}},
+{id:'dm',n:'Đua sát thương',e:ME(),x:{ms:[[50000,{g:1000}],[300000,{m:50}]],rk:[[1,{m:300}],[3,{m:150}],[10,{m:60}]]}},
+{id:'st',n:'Vượt ải',e:'2027-12-31',x:{ms:[[1,{g:500}],[3,{m:30}],[6,{m:80,t:40}]]}},
+{id:'sp',n:'Tiêu vàng',e:'2027-12-31',x:{ms:[[2000,{m:15}],[10000,{m:50}],[30000,{m:120}]]}},
+{id:'up',n:'Nâng cấp tướng',e:'2027-12-31',x:{ms:[[3,{g:500}],[10,{m:40}],[25,{m:100,t:30}]]}},
+{id:'fe',n:'Đại Lễ Hoa Lư',e:ME(),x:{ms:[[3,{m:10}],[10,{m:30}],[20,{m:60,t:50}]]}}];
+const QB=[['d1','d','Hạ gục 100 địch',100,200,10],['d2','d','Chơi 3 ván',3,0,10],['d3','d','Thắng 1 ván',1,300,15],['d4','d','Nâng cấp/tinh luyện 2 lần',2,300,0],['d5','d','Triệu hồi 1 lần',1,500,0],['w1','w','Hạ gục 1.500 địch',1500,1000,80],['w2','w','Thắng 5 ván',5,0,100],['w3','w','Triệu hồi 10 lần',10,0,60],['m1','m','Mở khoá Đại La',1,0,30],['m2','m','Mở khoá Trường An',2,0,50],['m3','m','Sở hữu 3 tướng',3,0,60],['m4','m','Học 5 ô Võ học',5,0,50]].map(a=>({id:a[0],t:a[1],n:a[2],tg:a[3],g:a[4],m:a[5]}));
+const GD={x1:60,x10:540,pity:90,soft:75,rates:{C:40,B:28,A:18,S:9,SS:4,SSR:1}};
+const bpd=(l,p)=>l===50&&p?{m:300}:p?(l%5?{g:l*150,t:10}:{m:40,t:30}):(l%5?{g:l*80}:{m:15,g:l*100});
+const TABS={hero:'Tướng',ev:'Sự kiện',gc:'Triệu hồi',bp:'Battle Pass',qs:'Nhiệm vụ',dt:'Dữ liệu'};let tab='hero';
+const num=(h,f,v,k,sc)=>`<div><label>${k}</label><input type=number step=any data-h="${h}" data-f="${f}" data-s="${sc||1}" value="${Math.round(v*(sc||1)*100)/100}"></div>`;
+function nav(){$('#nv').innerHTML=Object.entries(TABS).map(([k,v])=>`<b data-t="${k}" class="${k===tab?'on':''}">${v}</b>`).join('');R()}
+$('#nv').onclick=e=>{const t=e.target.dataset.t;if(t){tab=t;nav()}};
+const grab=()=>{const o={};document.querySelectorAll('[data-h]').forEach(e=>{const h=e.dataset.h;(o[h]=o[h]||{})[e.dataset.f]=V(e)/(+e.dataset.s||1)});return o};
+const R=()=>$('#mn').innerHTML=({hero:rHero,ev:rEv,gc:rGc,bp:rBp,qs:rQs,dt:rDt}[tab])();
+/* ---- TƯỚNG ---- */
+function heroes(){const o=L('dvcd_hero');return[...HB.map(b=>({...b,...(o[b.id]||{}),base:1})),...(o._new||[])]}
+function rHero(){const sel=(h,f,a,v)=>`<div><label>${f==='q'?'Phẩm':'Võ công'}</label><select data-h="${h}" data-f="${f}">${a.map(x=>`<option ${x[0]===v?'selected':''} value="${x[0]}">${x[1]}</option>`).join('')}</select></div>`;
+return`<div class="w">Mỗi thay đổi áp dụng ở lần tải game kế tiếp. Tỉ lệ triệu hồi chỉ chọn trong tướng đang bật.</div>`+heroes().map(h=>`<div class="c"><h3>${esc(h.n)} <small>(${h.id})</small></h3><div class="f">
+<div><label>Tên</label><input data-h="${h.id}" data-f="n" value="${esc(h.n)}"></div>${sel(h.id,'q',QL.map(q=>[q,q]),h.q)}${h.base?'':sel(h.id,'sk',Object.entries(SKN),h.sk)}
+${num(h.id,'hp',h.hp,'Sinh lực +')}${num(h.id,'am',h.am,'Công %',100)}${num(h.id,'sp',h.sp,'Tốc %',100)}${num(h.id,'cr',h.cr,'Bạo %',100)}${num(h.id,'g',h.g||0,'Giá 🪙')}${num(h.id,'m',h.m||0,'Giá 💎')}
+<div><label><input type=checkbox data-h="${h.id}" data-f="gc" ${h.gc?'checked':''}> Chỉ triệu hồi</label><label><input type=checkbox data-h="${h.id}" data-f="off" ${h.off?'checked':''}> Ẩn/tắt</label></div></div>${h.base?'':`<button class="d" onclick="delHero('${h.id}')">Xoá</button>`}</div>`).join('')+
+`<button onclick="saveHero()">💾 Lưu tướng</button><div class="c"><h3>➕ Thêm tướng mới</h3><div class="f"><div><label>ID (a-z)</label><input id="nid"></div><div><label>Tên</label><input id="nn"></div><div><label>Emoji</label><input id="ni" value="⭐"></div><div><label>Phẩm</label><select id="nq">${QL.map(q=>`<option>${q}</option>`).join('')}</select></div><div><label>Võ công</label><select id="ns">${Object.entries(SKN).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select></div></div><button onclick="addHero()">Thêm</button></div>`}
+function saveHero(){const g=grab(),o=L('dvcd_hero'),nw=o._new||[];for(const id in g){const b=nw.find(x=>x.id===id);if(b)Object.assign(b,g[id]);else o[id]=g[id]}o._new=nw;S('dvcd_hero',o);toast('Đã lưu tướng')}
+function addHero(){const id=$('#nid').value.trim().toLowerCase();if(!/^[a-z0-9]{2,8}$/.test(id)||heroes().some(h=>h.id===id))return toast('ID không hợp lệ/đã tồn tại');saveHero();const o=L('dvcd_hero');(o._new=o._new||[]).push({id,n:$('#nn').value||id,i:$('#ni').value,q:$('#nq').value,sk:$('#ns').value,hp:0,am:.05,sp:0,cr:0,g:1000,m:0,gc:1,col:'#6b7a4a'});S('dvcd_hero',o);R();toast('Đã thêm')}
+function delHero(id){const o=L('dvcd_hero');o._new=(o._new||[]).filter(h=>h.id!==id);S('dvcd_hero',o);R()}
+/* ---- SỰ KIỆN ---- */
+function rEv(){const o=L('dvcd_ev');return EB.map(b=>{const c=o[b.id]||{},x={...b.x,...Object.fromEntries(Object.keys(b.x).filter(k=>c[k]!==undefined).map(k=>[k,c[k]]))};
+return`<div class="c"><h3>${b.n} <small>(${b.id})</small></h3><div class="f"><div><label><input type=checkbox data-ev="${b.id}" data-f="on" ${c.on===0?'':'checked'}> Bật</label></div><div><label>Bắt đầu</label><input type=date data-ev="${b.id}" data-f="s" value="${c.s||MS()}"></div><div><label>Kết thúc</label><input type=date data-ev="${b.id}" data-f="e" value="${c.e||b.e}"></div></div>
+${Object.keys(b.x).length?`<label style="margin-top:6px">Mốc/thưởng/thông số (JSON) — g=vàng, m=kim cương, t=tinh thiết</label><textarea data-ev="${b.id}" data-f="x">${esc(JSON.stringify(x))}</textarea>`:''}</div>`}).join('')+'<button onclick="saveEv()">💾 Lưu sự kiện</button><button class="d" onclick="localStorage.removeItem(\'dvcd_ev\');R();toast(\'Đã khôi phục mặc định\')">Khôi phục mặc định</button>'}
+function saveEv(){const o={};try{document.querySelectorAll('[data-ev]').forEach(e=>{const i=e.dataset.ev,f=e.dataset.f,c=o[i]=o[i]||{};if(f==='x')Object.assign(c,JSON.parse(e.value));else c[f]=f==='on'?+e.checked:e.value});
+for(const i in o)if(o[i].s&&o[i].e&&o[i].s>o[i].e)throw Error('Ngày kết thúc phải sau ngày bắt đầu ('+i+')');S('dvcd_ev',o);toast('Đã lưu sự kiện')}catch(e){toast('Lỗi: '+e.message)}}
+/* ---- TRIỆU HỒI ---- */
+function rGc(){const g={...GD,...L('dvcd_gc')};g.rates={...GD.rates,...(L('dvcd_gc').rates||{})};
+return`<div class="c"><h3>Tỉ lệ triệu hồi (tổng phải = 100%)</h3><div class="f">${QL.map(q=>`<div><label>${q} %</label><input type=number step=any data-g="r.${q}" value="${g.rates[q]}"></div>`).join('')}</div><div id="sum" class="w"></div></div>
+<div class="c"><h3>Chi phí & bảo hiểm</h3><div class="f">${[['x1','Giá x1 💎'],['x10','Giá x10 💎'],['pity','Bảo hiểm SSR (lượt)'],['soft','Bắt đầu tăng tỉ lệ ở lượt']].map(a=>`<div><label>${a[1]}</label><input type=number data-g="${a[0]}" value="${g[a[0]]}"></div>`).join('')}</div></div><button onclick="saveGc()">💾 Lưu</button><button class="d" onclick="localStorage.removeItem('dvcd_gc');R()">Mặc định</button>`}
+document.addEventListener('input',e=>{if(e.target.dataset.g){const s=QL.reduce((a,q)=>a+(+(document.querySelector(`[data-g="r.${q}"]`)||{}).value||0),0),d=$('#sum');if(d)d.textContent='Tổng: '+Math.round(s*100)/100+'%'+(Math.abs(s-100)>.01?' ⚠ phải bằng 100':'')}});
+function saveGc(){const o={rates:{}};let s=0;document.querySelectorAll('[data-g]').forEach(e=>{const k=e.dataset.g,v=+e.value;if(k[0]==='r'&&k[1]==='.'){o.rates[k.slice(2)]=v;s+=v}else o[k]=v});if(Math.abs(s-100)>.01)return toast('Tổng tỉ lệ phải bằng 100%');if(o.soft>=o.pity)return toast('Lượt tăng tỉ lệ phải nhỏ hơn bảo hiểm');S('dvcd_gc',o);toast('Đã lưu')}
+/* ---- BATTLE PASS ---- */
+const fv=(r,k)=>(r||{})[k]||0;
+function rBp(){const b={n:'Mùa 1 · Huyền Thoại Hoa Lư',s:MS(),e:ME(),pc:500,...L('dvcd_bp')},rw=b.rw||{};
+const row=(l,p)=>{const r=rw[l+(p?'p':'f')]||bpd(l,p);return['g','m','t'].map(k=>`<input type=number data-bp="${l}${p?'p':'f'}" data-k="${k}" value="${fv(r,k)}">`).join('')};
+return`<div class="c"><div class="f"><div style="grid-column:span 2"><label>Tên mùa</label><input id="bn" value="${esc(b.n)}"></div><div><label>Bắt đầu</label><input type=date id="bs" value="${b.s}"></div><div><label>Kết thúc</label><input type=date id="be" value="${b.e}"></div><div><label>Giá Premium 💎</label><input type=number id="bc" value="${b.pc}"></div></div></div>
+<div class="c"><h3>Phần thưởng (Free: 3 ô trái · Premium: 3 ô phải) — g/m/t</h3><div class="bp"><b>Lv</b><b>g</b><b>m</b><b>t</b><b>g</b><b>m</b><b>t</b></div>${Array.from({length:50},(_,i)=>`<div class="bp"><b>${i+1}</b>${row(i+1,0)}${row(i+1,1)}</div>`).join('')}</div><button onclick="saveBp()">💾 Lưu Battle Pass</button><button class="d" onclick="localStorage.removeItem('dvcd_bp');R()">Mặc định</button>`}
+function saveBp(){const b={n:$('#bn').value,s:$('#bs').value,e:$('#be').value,pc:+$('#bc').value||0,rw:{}};if(b.s>b.e)return toast('Ngày kết thúc phải sau ngày bắt đầu');const t={};document.querySelectorAll('[data-bp]').forEach(e=>{(t[e.dataset.bp]=t[e.dataset.bp]||{})[e.dataset.k]=+e.value||0});
+for(const k in t){const l=+k.slice(0,-1),p=k.slice(-1)==='p',d=bpd(l,p),r={};for(const x of['g','m','t'])if(t[k][x])r[x]=t[k][x];if(['g','m','t'].some(x=>fv(d,x)!==fv(r,x)))b.rw[k]=r}S('dvcd_bp',b);toast('Đã lưu Battle Pass')}
+/* ---- NHIỆM VỤ ---- */
+function rQs(){const o=L('dvcd_qs'),T={d:'Hằng ngày',w:'Hằng tuần',m:'Chính tuyến'};
+return QB.map(q=>{const c=o[q.id]||{},r=c.r||{g:q.g,m:q.m};return`<div class="c"><h3>${T[q.t]} · ${q.id}</h3><div class="f"><div style="grid-column:span 2"><label>Mô tả</label><input data-h="${q.id}" data-f="n" value="${esc(c.n||q.n)}"></div>${num(q.id,'tg',c.tg||q.tg,'Mục tiêu')}${num(q.id,'g',r.g||0,'Thưởng 🪙')}${num(q.id,'m',r.m||0,'Thưởng 💎')}<div><label><input type=checkbox data-h="${q.id}" data-f="off" ${c.off?'checked':''}> Tắt</label></div></div></div>`}).join('')+'<button onclick="saveQs()">💾 Lưu nhiệm vụ</button><button class="d" onclick="localStorage.removeItem(\'dvcd_qs\');R()">Mặc định</button>'}
+function saveQs(){const g=grab(),o={};for(const id in g){const x=g[id];if(x.tg<=0)return toast('Mục tiêu phải > 0 ('+id+')');o[id]={n:x.n,tg:x.tg,r:{g:x.g,m:x.m},off:x.off}}S('dvcd_qs',o);toast('Đã lưu nhiệm vụ')}
+/* ---- DỮ LIỆU ---- */
+function rDt(){const sv=L('dvcd');return`<div class="c"><h3>Save game hiện tại</h3><div style="font-size:13px">🪙 ${sv.gold??'—'} · 💎 ${sv.gem??'—'} · Tướng: ${Object.keys(sv.hu||{}).length} · Phiên bản save: ${sv.v||1}</div><div class="f" style="margin-top:6px"><div><label>+ Vàng</label><input type=number id="cg" value="100000"></div><div><label>+ Kim cương</label><input type=number id="cm" value="1000"></div></div><button onclick="cheat()">Cộng tài nguyên (test)</button></div>
+<div class="c"><h3>Sao lưu / khôi phục</h3><button onclick="exp()">⬇ Xuất JSON</button><button onclick="$('#imp').style.display='block'">⬆ Nhập JSON</button><div id="imp" style="display:none"><textarea id="it" placeholder="Dán JSON đã xuất"></textarea><button onclick="imp()">Áp dụng</button></div></div>
+<div class="c"><h3>Vùng nguy hiểm</h3><button class="d" onclick="if(confirm('Xoá toàn bộ cấu hình admin?')){['dvcd_hero','dvcd_gc','dvcd_qs','dvcd_ev','dvcd_bp'].forEach(k=>localStorage.removeItem(k));toast('Đã xoá cấu hình')}">Xoá toàn bộ cấu hình admin</button></div>`}
+function cheat(){const s=L('dvcd');if(!Object.keys(s).length)return toast('Chưa có save — hãy mở game 1 lần');s.gold=(s.gold||0)+(+$('#cg').value||0);s.gem=(s.gem||0)+(+$('#cm').value||0);S('dvcd',s);rDtR()}
+const rDtR=()=>{R();toast('Đã cập nhật')};
+function exp(){const o={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k.startsWith('dvcd'))o[k]=localStorage.getItem(k)}const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(o)],{type:'application/json'}));a.download='dai-viet-backup.json';a.click()}
+function imp(){try{const o=JSON.parse($('#it').value);for(const k in o){if(!k.startsWith('dvcd'))throw Error('Khoá lạ: '+k);JSON.parse(o[k])}for(const k in o)localStorage.setItem(k,o[k]);R();toast('Đã nhập')}catch(e){toast('Lỗi: '+e.message)}}
+nav();
+</script></body></html>
