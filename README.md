@@ -53,3 +53,14 @@ Game thủ thành Hoa Lư cũ (js/, css/, shared/, admin/, test/, vendor/) đã 
 - Ngày reset nhiệm vụ/điểm danh theo giờ địa phương (trước đây theo UTC, lệch 7 giờ).
 - Sửa: đánh Boss thế giới làm sai "kỷ lục sống sót"; thắng khi vừa chết; hộp thoại treo máy hiện giữa trận; số % tướng lẻ.
 - Thiếu ảnh `it_n*`/`it_f*` (găng, giày): tự dùng biểu tượng emoji.
+
+
+## Phase 5 — 52 chương × 6 màn (data-driven)
+
+- `data/monsters.js` — quái, Elite, Mini Boss, bộ cơ chế Boss (8 cấp), sự kiện, bản đồ. Thuần dữ liệu.
+- `data/chapters.js` — `DV_DATA.rules` (mọi hằng số cân bằng) + bảng 52 chương + bộ dựng Stage/Wave/Timeline/Reward/3 sao + `DV_DATA.validate()`.
+- Engine (`index.html`) chỉ đọc `DV_DATA.getStage(c0, i)` / `getChapter(c0)`; không có màn nào hard-code. Màn sự kiện `v` vẫn dùng `waveSets.v` cũ.
+- Tài liệu bảng chương: `docs/PHASE5_CHAPTERS.md` (sinh tự động).
+- Kiểm tra dữ liệu: `node -e "console.log(require('./tests/load.js').validate())"`.
+- Test trình duyệt (cần Playwright): `tests/smoke_all.py` (312 màn), `tests/test_progress.py` (mở khoá/thưởng/sao), `tests/batch.py 1,10,20 1,6 god` (mô phỏng toàn màn bằng bot), `tests/mortal.py` (bot không bất tử). Mở game với `?debug` để bật hook `window.__dv`.
+- Hiệu chỉnh HP Boss: `rules.boss.dpsRef` (DPS đo bằng bot theo lực chiến khuyến nghị) × thời lượng chiến đấu × `rules.boss.ttk`.
