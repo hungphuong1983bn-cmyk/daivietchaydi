@@ -1,0 +1,10 @@
+{
+  "appId": "vn.daiviet.chaydi",
+  "appName": "Đại Việt Chạy Đi",
+  "webDir": "www",
+  "backgroundColor": "#0b1020",
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#0b1020"
+  }
+}
