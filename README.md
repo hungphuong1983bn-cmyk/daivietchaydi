@@ -74,3 +74,7 @@ Game thủ thành Hoa Lư cũ (js/, css/, shared/, admin/, test/, vendor/) đã 
 ## Phase 7 — Character System
 
 7 nhân vật có hồ sơ đầy đủ (chỉ số, vũ khí, nội tại, 3 kỹ năng, tuyệt kỹ, Thức Tỉnh ×3, Thăng Giai ×5, trạng thái MAX), nhận diện hình dáng riêng và 8 animation. Toàn bộ nằm trong `data/characters.js`; engine `js/character.js`. Mở Hồ sơ: **Tướng → 📜 Hồ sơ · Tiến hoá**. Xem `docs/PHASE7_CHARACTER.md`. Kiểm thử: `python3 tests/char_test.py`. Hệ thống tướng cũ giữ nguyên; thiếu file mới thì game dùng hình/chỉ số cũ.
+
+
+## Phase 8 — Main Menu & UI
+`js/home.js` (cảnh parallax, banner chương, thoại nhân vật, màn Loading) · `js/charselect.js` (chọn nhân vật vuốt ngang: Thuộc tính / Võ công / Trang bị, nối Hồ sơ Phase 7) · `js/chmap.js` (bản đồ võ lâm 52 chương: khoá / hiện tại / hoàn thành, sao, hạng S-A-B-C, thưởng). Chạm một chương → mở bản đồ màn của chương đó như cũ. Thiếu module → game dùng giao diện cũ.
