@@ -82,3 +82,7 @@ Game thủ thành Hoa Lư cũ (js/, css/, shared/, admin/, test/, vendor/) đã 
 
 ## Phase 9 — Art Pass Q版 Võ Hiệp
 Nhân vật Q版 (`js/chibi.js`: mặt riêng, trang bị đổi hình theo phẩm chất, hiệu ứng lên cấp/học võ công/nâng cảnh giới) và quái theo chương (`js/monsterart.js`: 15 chủng tộc × 14 vai trò × biến thể từng chương, hiệu ứng xuất hiện/bị đánh/tiêu diệt). Gameplay và dữ liệu không đổi; thiếu file → dùng hình cũ. Xem `docs/PHASE9_ART.md`.
+
+
+## Phase 10 — VFX chiến đấu
+`js/vfx.js` (`DV_VFX`): mỗi kỹ năng một hình + màu riêng (Kiếm Khí · Lôi Động · Hàng Long Chưởng · Phi Kiếm, kèm biến thể Tiến Hoá), 7 tuyệt kỹ theo tướng (ánh sáng/đao khí+lửa/băng/sét/độc/vòng năng lượng+gió), hit effect theo nguồn đòn, vệt đuôi đạn, vụ nổ, đạn & vùng báo đòn của kẻ địch theo chủ đề, rung màn hình nhẹ. Có trần hiệu ứng theo đồ hoạ và không phủ kín màn hình. Thiếu file → dùng hiệu ứng cũ. Xem `docs/PHASE10_VFX.md`. Kiểm thử: `python3 tests/vfx_test.py OUT [0|1|2]`.
