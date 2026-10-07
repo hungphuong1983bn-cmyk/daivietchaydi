@@ -64,3 +64,13 @@ Game thủ thành Hoa Lư cũ (js/, css/, shared/, admin/, test/, vendor/) đã 
 - Kiểm tra dữ liệu: `node -e "console.log(require('./tests/load.js').validate())"`.
 - Test trình duyệt (cần Playwright): `tests/smoke_all.py` (312 màn), `tests/test_progress.py` (mở khoá/thưởng/sao), `tests/batch.py 1,10,20 1,6 god` (mô phỏng toàn màn bằng bot), `tests/mortal.py` (bot không bất tử). Mở game với `?debug` để bật hook `window.__dv`.
 - Hiệu chỉnh HP Boss: `rules.boss.dpsRef` (DPS đo bằng bot theo lực chiến khuyến nghị) × thời lượng chiến đấu × `rules.boss.ttk`.
+
+
+## Phase 6 — Map & Môi trường
+
+52 khu vực với nền, địa hình, thời tiết, ánh sáng, đấu trường Boss và hiệu ứng môi trường riêng. Xem `docs/PHASE6_ENVIRONMENT.md`. Kiểm thử: `python3 tests/env_test.py` (và `... shots DIR` để chụp ảnh từng khu).
+
+
+## Phase 7 — Character System
+
+7 nhân vật có hồ sơ đầy đủ (chỉ số, vũ khí, nội tại, 3 kỹ năng, tuyệt kỹ, Thức Tỉnh ×3, Thăng Giai ×5, trạng thái MAX), nhận diện hình dáng riêng và 8 animation. Toàn bộ nằm trong `data/characters.js`; engine `js/character.js`. Mở Hồ sơ: **Tướng → 📜 Hồ sơ · Tiến hoá**. Xem `docs/PHASE7_CHARACTER.md`. Kiểm thử: `python3 tests/char_test.py`. Hệ thống tướng cũ giữ nguyên; thiếu file mới thì game dùng hình/chỉ số cũ.
