@@ -1,0 +1,24 @@
+<!doctype html><meta charset=utf-8><body style="margin:0;background:#2a3a5a"><canvas id=c></canvas>
+<script src="../data/characters.js"></script><script src="../js/chibi.js"></script><script src="../js/character.js"></script>
+<script>
+const q=new URLSearchParams(location.search),mode=q.get('m')||'states';
+const ids=DV_DATA.characters.map(c=>c.id),cv=document.getElementById('c'),ctx=cv.getContext('2d');
+const sv={eqp:{},inv:[]};const items={w:3,a:3,h:2,b:2,n:1,f:3,r:2};
+if(q.get('eq')){for(const k in items){const u='u'+k;sv.inv.push({u,s:k,r:+q.get('eq')>=0?Math.min(3,+q.get('eq')):items[k],l:5});sv.eqp[k]=u}}
+DV_CHAR.bind({sv:()=>sv,put(){},sfx(){},info(){},cap:()=>55,legacy:()=>null});
+const S=['idle','move','attack','skill','ultimate','hit','defeat','victory'];
+function render(){
+ const cols=mode==='states'?S.length:ids.length, rows=mode==='states'?ids.length:4, cw=mode==='states'?120:150, ch=mode==='states'?120:200;
+ cv.width=cols*cw;cv.height=rows*ch;ctx.fillStyle='#3a5a4a';ctx.fillRect(0,0,cv.width,cv.height);
+ for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
+  ctx.fillStyle=((r+c)%2)?'#41624f':'#385546';ctx.fillRect(c*cw,r*ch,cw,ch);
+  let id,st,aw=0,asc=0,mx=false,burst=null;
+  if(mode==='states'){id=ids[r];st=S[c]}
+  else{id=ids[c];st='idle';[aw,asc,mx]=[[0,0,false],[1,1,false],[2,3,false],[3,5,true]][r]}
+  const T=DV_DATA.charRules.anim[st].dur;
+  DV_CHAR.draw(ctx,id,{x:c*cw+cw/2,y:r*ch+ch*(mode==='states'?.78:.82),scale:mode==='states'?1.7:2.4,f:1,t:1.0+c*.3,state:st,st:T*.45,aw,asc,max:mx,q:2,burst:q.get('b')?{k:q.get('b'),u:+q.get('u')||.5}:null});
+ }
+ window.DONE=1;
+}
+render();
+</script>

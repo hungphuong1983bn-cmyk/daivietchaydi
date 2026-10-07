@@ -67,7 +67,7 @@ function loop(now){
   const id=ids[idx],h=ctx.hero(id),CH=window.DV_CHAR;
   if(CH&&CH.ok()&&CH.get(id)){
     const R=DV_DATA.charRules,a=R.anim[state];if(a&&!a.loop&&stT>a.dur+.1){state='idle';stT=0}
-    CH.draw(c,id,{x:W/2,y:H*.9,scale:H/190*2.05,f:1,t:clock,state,st:stT,aw:h.aw,asc:h.asc,max:h.max,q:RM?1:2,evo:0})
+    CH.draw(c,id,{x:W/2,y:H*.9,scale:H/190*(window.DV_CHIBI?1.62:2.05),f:1,t:clock,state,st:stT,aw:h.aw,asc:h.asc,max:h.max,q:RM?1:2,evo:0})
   }else{c.font=H*.5+'px serif';c.textAlign='center';c.fillText(h.i||'🧙',W/2,H*.7)}
   raf=requestAnimationFrame(loop);
 }

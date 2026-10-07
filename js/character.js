@@ -15,6 +15,16 @@
   const PRIO = { idle: 0, move: 1, attack: 2, skill: 3, hit: 4, ultimate: 5, victory: 6, defeat: 7 };
   const STATE_VN = { idle: 'Đứng yên', move: 'Di chuyển', attack: 'Đánh thường', skill: 'Kỹ năng', ultimate: 'Tuyệt kỹ', hit: 'Trúng đòn', defeat: 'Gục ngã', victory: 'Chiến thắng' };
   let B = null; // cầu nối tới index.html: {sv,put,sfx,info,cap,legacy}
+  /* Phase 9: lớp hình ảnh Q版 (js/chibi.js). Thiếu file → dùng hình vẽ cũ bên dưới. */
+  const CB = window.DV_CHIBI && window.DV_CHIBI.ok() ? window.DV_CHIBI : null;
+  let EQC = { t: -1, v: null };
+  function eqOf() { // trang bị đang mặc → hình dáng trên nhân vật
+    const now = (typeof performance !== 'undefined' ? performance.now() : Date.now());
+    if (now - EQC.t < 400) return EQC.v; EQC.t = now; let o = null;
+    try { const sv = B && B.sv && B.sv(); if (sv && sv.eqp && sv.inv) { o = {}; for (const k in sv.eqp) { const it = sv.inv.find(i => i.u === sv.eqp[k]); if (it) o[k] = { r: it.r | 0, l: it.l | 0 } } } } catch (e) { o = null }
+    return EQC.v = o;
+  }
+  const BURST_DUR = { lvl: 1.0, skl: 1.2, realm: 1.7 };
 
   /* ================= DỮ LIỆU & CHỈ SỐ ================= */
   const get = id => D.charById && D.charById[id] || null;
@@ -219,8 +229,8 @@
   /* ================= PHỤ KIỆN TIẾN HOÁ (extra) ================= */
   const EXTRA_BEHIND = {
     wings(X) { const c = X.c, P = X.pal, f = M.sin(X.t * 3) * .12 + (X.state === 'victory' ? .2 : 0), col = X.d.aura.color; for (const s of [0, 1]) { c.save(); c.translate(-2, -24); c.rotate(-.3 - s * .35 + f * (s ? 1 : -1)); c.fillStyle = rgba(col, .26 + X.d.glow * .15); c.beginPath(); c.moveTo(0, 0); c.quadraticCurveTo(-22, -16 - s * 6, -34 + s * 6, -3 + s * 10); c.quadraticCurveTo(-18, -2, 0, 3); c.fill(); c.strokeStyle = rgba(P.accent, .55); c.lineWidth = 1; c.stroke(); c.restore() } },
-    halo(X) { const c = X.c, P = X.pal, y = -42 + M.sin(X.t * 2) * .6; c.save(); c.translate(-2, y); c.strokeStyle = rgba(P.accent, .9); c.lineWidth = 2; c.beginPath(); c.ellipse(0, 0, 11, 3.6, 0, 0, TAU); c.stroke(); c.strokeStyle = rgba('#ffffff', .6); c.lineWidth = .8; c.beginPath(); c.ellipse(0, 0, 8, 2.4, 0, 0, TAU); c.stroke(); const g = c.createRadialGradient(0, 0, 2, 0, 0, 20); g.addColorStop(0, rgba(P.accent, .25)); g.addColorStop(1, rgba(P.accent, 0)); c.fillStyle = g; c.fillRect(-20, -14, 40, 28); c.restore() },
-    crown(X) { const c = X.c, P = X.pal, col = X.d.aura.color, y = -50; c.save(); c.translate(-1, y); c.fillStyle = rgba(col, .3 + X.d.glow * .2); for (let i = 0; i < 5; i++) { const x = (i - 2) * 6, r = 5 + (i % 2) * 2 - M.abs(i - 2) * .6; c.beginPath(); c.arc(x, M.sin(X.t * 2 + i) * 1.2, r, 0, TAU); c.fill() } c.strokeStyle = rgba(P.accent, .8); c.lineWidth = 1.2; for (let i = 0; i < 3; i++) { if (((X.t * 8 + i * 3) | 0) % 4 === 0) continue; const x = (i - 1) * 8; c.beginPath(); c.moveTo(x, 4); c.lineTo(x + 2, 9); c.lineTo(x - 1, 12); c.lineTo(x + 1, 17); c.stroke() } c.restore() },
+    halo(X) { const c = X.c, P = X.pal, y = (X.top ? X.top - 3 : -42) + M.sin(X.t * 2) * .6; c.save(); c.translate(-2, y); c.strokeStyle = rgba(P.accent, .9); c.lineWidth = 2; c.beginPath(); c.ellipse(0, 0, 11, 3.6, 0, 0, TAU); c.stroke(); c.strokeStyle = rgba('#ffffff', .6); c.lineWidth = .8; c.beginPath(); c.ellipse(0, 0, 8, 2.4, 0, 0, TAU); c.stroke(); const g = c.createRadialGradient(0, 0, 2, 0, 0, 20); g.addColorStop(0, rgba(P.accent, .25)); g.addColorStop(1, rgba(P.accent, 0)); c.fillStyle = g; c.fillRect(-20, -14, 40, 28); c.restore() },
+    crown(X) { const c = X.c, P = X.pal, col = X.d.aura.color, y = X.top ? X.top - 7 : -50; c.save(); c.translate(-1, y); c.fillStyle = rgba(col, .3 + X.d.glow * .2); for (let i = 0; i < 5; i++) { const x = (i - 2) * 6, r = 5 + (i % 2) * 2 - M.abs(i - 2) * .6; c.beginPath(); c.arc(x, M.sin(X.t * 2 + i) * 1.2, r, 0, TAU); c.fill() } c.strokeStyle = rgba(P.accent, .8); c.lineWidth = 1.2; for (let i = 0; i < 3; i++) { if (((X.t * 8 + i * 3) | 0) % 4 === 0) continue; const x = (i - 1) * 8; c.beginPath(); c.moveTo(x, 4); c.lineTo(x + 2, 9); c.lineTo(x - 1, 12); c.lineTo(x + 1, 17); c.stroke() } c.restore() },
     pennants(X) { const c = X.c, P = X.pal; c.strokeStyle = rgba(P.accent, .9); c.lineWidth = 2.4; c.lineCap = 'round'; for (let j = 0; j < 3; j++) { c.beginPath(); c.moveTo(-X.bw * .5, -13 + j * 1.5); for (let i = 1; i <= 7; i++)c.lineTo(-X.bw * .5 - i * 3 - X.p.leg * .3, -13 + j * 2 + i * (.6 + j * .35) + M.sin(X.t * 5 - i * .8 + j * 1.5) * (1 + i * .4)); c.stroke() } c.lineCap = 'butt' },
     coil(X) { const c = X.c, P = X.pal, col = X.d.aura.color; c.save(); c.translate(-2, -20); c.strokeStyle = rgba(col, .75); c.lineWidth = 3; c.lineCap = 'round'; c.beginPath(); for (let i = 0; i <= 28; i++) { const u = i / 28, a = X.t * 2.2 + u * 9, x = M.cos(a) * (13 + u * 4), y = 22 - u * 62 + M.sin(a) * 2.4; i ? c.lineTo(x, y) : c.moveTo(x, y) } c.globalAlpha = .55; c.stroke(); c.lineWidth = 1.2; c.strokeStyle = rgba(P.accent, .9); c.globalAlpha = .8; c.stroke(); c.restore() }
   };
@@ -292,7 +302,7 @@
     const c = get(id); if (!c) return false; const R = RULES();
     const aw = o.aw | 0, asc = o.asc | 0, mx = !!o.max, d = resolve(id, aw, asc, mx), state = STATES.indexOf(o.state) >= 0 ? o.state : 'idle';
     const T = R.anim[state].dur, loop = R.anim[state].loop, s = loop ? (o.st || 0) % T : M.min(o.st || 0, T);
-    const p = pose(c, d, state, s, T), sc = (o.scale || 1) * d.height, q = o.q == null ? 2 : o.q, f = o.f || 1;
+    const p = pose(c, d, state, s, T), sc = (o.scale || 1) * d.height * (CB ? 1.12 * (1 + M.min(.1, (aw + asc * .6 + (mx ? 3 : 0)) * .01)) : 1), q = o.q == null ? 2 : o.q, f = o.f || 1;
     const pal = d.palette, fl = M.max(p.flash, o.flash || 0);
     const X = { c: ctx, d, pal, p, t: o.t || 0, state, q, f, bw: 7 * d.width, sc: d.width, max: mx, m: col => fl > .02 ? mix(col, M.min(1, fl)) : col, pass: 'both' };
     ctx.save(); ctx.translate(o.x, o.y); ctx.scale(sc * f, sc); if (o.alpha != null) ctx.globalAlpha = o.alpha;
@@ -308,19 +318,24 @@
     ctx.save(); ctx.translate(p.ox, p.oy); if (p.rot) ctx.rotate(p.rot); ctx.scale(p.sx, p.sy); ctx.rotate(p.lean * .6); if (p.al < 1) ctx.globalAlpha *= p.al;
     ctx.translate(0, p.bob);
     if (X.q > 0) { X.pass = 'back'; for (const e of d.extra) if (EXTRA_BEHIND[e]) EXTRA_BEHIND[e](X); if (d.extra.indexOf('blades') >= 0) EXTRA_FRONT.blades(X) }
+    let S, tip;
+    if (CB) { X.eq = eqOf(); X.id = id; X.top = -52; const rb = CB.body(X); S = rb.S; tip = rb.tip }
+    else {
     (BACK[d.back] || BACK.none)(X);
     (BODY[d.body] || BODY.armor)(X);
     (SHOULDER[d.shoulder] || SHOULDER.none)(X); (HEAD[d.head] || HEAD.round)(X);
     /* tay + vũ khí */
-    const S = { x: 3, y: -24 }, Hd = hand(X, S, p.wa);
+    S = { x: 3, y: -24 }; const Hd = hand(X, S, p.wa);
     ctx.strokeStyle = X.m(pal.sub); ctx.lineWidth = 3.6; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(S.x, S.y); ctx.lineTo(Hd.x, Hd.y); ctx.stroke(); ctx.lineCap = 'butt';
-    const tip = WEAPON[d.weapon](X, Hd, p.wa, p);
+    tip = WEAPON[d.weapon](X, Hd, p.wa, p);
     ctx.fillStyle = X.m(pal.skin); ctx.beginPath(); ctx.arc(Hd.x, Hd.y, 2.3, 0, TAU); ctx.fill();
+    }
     if (X.q > 0) { X.pass = 'front'; if (d.extra.indexOf('blades') >= 0) EXTRA_FRONT.blades(X); if (d.extra.indexOf('flames') >= 0) EXTRA_FRONT.flames(X); if (d.extra.indexOf('embers') >= 0) EXTRA_FRONT.embers(X) }
     ctx.restore();
     /* 3. VFX trạng thái (không bị nghiêng) */
     if (q > 0 || state === 'attack') stateVfx(X, tip, { x: S.x + p.ox, y: S.y + p.bob }); 
     if (o.evo > 0) { ctx.fillStyle = rgba('#ffffff', M.max(0, o.evo - .55) * 1.6); ctx.fillRect(-60, -90, 120, 100) }
+    if (CB) { if (o.burst) CB.burst(ctx, o.burst.k, o.burst.u, pal, q, o.t || 0, d.aura.color); if (o.bursts) for (const b of o.bursts) CB.burst(ctx, b.k, b.u, pal, q, o.t || 0, d.aura.color); if (o.evo > 0) CB.burst(ctx, 'realm', 1 - o.evo, pal, q, o.t || 0, d.aura.color) }
     ctx.restore(); return true;
   }
 
@@ -335,7 +350,7 @@
     /* khi một trạng thái không lặp vừa hết hạn mà đòn mới lại tới: bắt đầu lại */
     if (!R.anim[cs.s].loop && G.t - cs.t0 > R.anim[cs.s].dur && cs.s === want && (want === 'attack' || want === 'skill')) cs.t0 = G.t - .001;
     const flick = P.inv > 0 && ((G.t * 20) | 0) % 2;
-    return draw(ctx, cp.id, { x, y, scale: 1, f: P.face, t: G.t, state: cs.s, st: G.t - cs.t0, aw: cp.aw, asc: cp.asc, max: cp.max, q, alpha: flick && cs.s !== 'defeat' ? .55 : null });
+    return draw(ctx, cp.id, { x, y, scale: 1, f: P.face, t: G.t, state: cs.s, st: G.t - cs.t0, aw: cp.aw, asc: cp.asc, max: cp.max, q, alpha: flick && cs.s !== 'defeat' ? .55 : null, bursts: [cp.burst, cp.burst2].filter(b => b && G.t >= b.t0 && G.t - b.t0 < BURST_DUR[b.k]).map(b => ({ k: b.k, u: (G.t - b.t0) / BURST_DUR[b.k] })) });
   }
 
   /* ================= MÀN HỒ SƠ ================= */
@@ -394,7 +409,7 @@ ${own ? `<div style="margin:6px 0;padding:6px 8px;border-radius:8px;border:1px s
       if (UI.evo > 0) UI.evo = M.max(0, UI.evo - dt / 1.3);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
       const g = ctx.createRadialGradient(W / 2, 158, 4, W / 2, 158, 120); g.addColorStop(0, 'rgba(255,255,255,.08)'); g.addColorStop(1, 'rgba(255,255,255,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
-      draw(ctx, UI.id, { x: W / 2 - 4, y: 166, scale: 2.4, f: 1, t: clock, state: cur, st: stT, aw: UI.pv.aw, asc: UI.pv.asc, max: UI.pv.max, q: reduce ? 1 : 2, evo: UI.evo });
+      draw(ctx, UI.id, { x: W / 2 - 4, y: 166, scale: CB ? 1.9 : 2.4, f: 1, t: clock, state: cur, st: stT, aw: UI.pv.aw, asc: UI.pv.asc, max: UI.pv.max, q: reduce ? 1 : 2, evo: UI.evo });
       UI.raf = requestAnimationFrame(loop);
     })(last);
   }

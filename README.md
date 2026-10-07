@@ -16,10 +16,6 @@ Kéo ngón tay hoặc WASD/mũi tên để di chuyển · võ công tự đánh 
 `index.html`, `admin-dai-viet.html`, `manifest.webmanifest`, `assets/` (ảnh), `icons/`.
 Game thủ thành Hoa Lư cũ (js/, css/, shared/, admin/, test/, vendor/) đã được gỡ bỏ.
 
-## Đóng gói APK (GitHub Actions)
-Push lên GitHub → tab **Actions → Build Android APK** → tải APK ở mục Artifacts. Ký release, tag phát hành, v.v.: xem [`docs/BUILD_APK.md`](docs/BUILD_APK.md).
-Build thử cục bộ: `npm install && npm run android:add && npm run android:debug`.
-
 ## v2.4.0 — Nâng cấp Phase 4: EXP/Level cap · Card animation · Skill data · Tiến Hoá
 - `data/progression.js`: trần cấp **trong ván = 40** (đường cong EXP giữ nguyên tới cấp 15, sau đó chậm lại); đạt trần thì orb EXP đổi thành vàng, HUD hiện **MAX**. Trần cấp **Tướng theo sao**: 0★ = 30 … 5★ = 55; EXP dư khi đã MAX đổi thành vàng (÷20). Thiếu file → dùng cấu hình dự phòng trong `index.html`.
 - `data/skills.js`: bảng võ công tách khỏi code (thêm/chỉnh võ công không cần sửa `index.html`). Mỗi võ công tấn công có khối `evo` (điều kiện + hệ số).
@@ -82,3 +78,7 @@ Build thử cục bộ: `npm install && npm run android:add && npm run android:d
 
 ## Phase 8 — Main Menu & UI
 `js/home.js` (cảnh parallax, banner chương, thoại nhân vật, màn Loading) · `js/charselect.js` (chọn nhân vật vuốt ngang: Thuộc tính / Võ công / Trang bị, nối Hồ sơ Phase 7) · `js/chmap.js` (bản đồ võ lâm 52 chương: khoá / hiện tại / hoàn thành, sao, hạng S-A-B-C, thưởng). Chạm một chương → mở bản đồ màn của chương đó như cũ. Thiếu module → game dùng giao diện cũ.
+
+
+## Phase 9 — Art Pass Q版 Võ Hiệp
+Nhân vật Q版 (`js/chibi.js`: mặt riêng, trang bị đổi hình theo phẩm chất, hiệu ứng lên cấp/học võ công/nâng cảnh giới) và quái theo chương (`js/monsterart.js`: 15 chủng tộc × 14 vai trò × biến thể từng chương, hiệu ứng xuất hiện/bị đánh/tiêu diệt). Gameplay và dữ liệu không đổi; thiếu file → dùng hình cũ. Xem `docs/PHASE9_ART.md`.

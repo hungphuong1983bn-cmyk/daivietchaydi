@@ -1,0 +1,16 @@
+<!doctype html><meta charset=utf-8><body style="margin:0"><canvas id=c></canvas>
+<script src="../data/monsters.js"></script><script src="../js/monsterart.js"></script>
+<script>
+const th=['plain','river','valley','forest','citadel','shadow','mountain','swamp','sea','cave','snow','desert','volcano','void','heaven'];
+const roles=['grunt','fast','tank','swarm','archer','lancer','bomber','armor','splitter','shaman','summoner','assassin','colossus','hunter','mini','boss'];
+const cw=84,ch=96,cv=document.getElementById('c'),ctx=cv.getContext('2d');cv.width=roles.length*cw;cv.height=th.length*ch;
+const ids={plain:1,river:2,valley:3,forest:4,citadel:5,shadow:6,mountain:9,swamp:11,sea:13,cave:28,snow:34,desert:35,volcano:36,void:46,heaven:47},first={};th.forEach(t=>first[t]={chapterId:ids[t]});
+let id=1;
+th.forEach((t,r)=>roles.forEach((ro,c)=>{
+ ctx.fillStyle=(r+c)%2?'#3d5a48':'#456350';ctx.fillRect(c*cw,r*ch,cw,ch);
+ const d=DV_DATA.enemies[ro]||{r:ro==='boss'?30:24,c:'#8a3a3a'};const e={tid:ro,r:d.r,c:d.c,id:id++,fl:0,sp:50,x:0,y:0,el:ro==='mini'?2:0,mb:ro==='mini'?1:0,boss:ro==='boss'?1:0,tel:0,dsh:0,born:-9};
+ const G={t:2.3,p:{x:999,y:0},en:[],ch:{theme:t,chapterId:first[t].chapterId,bossTier:2},fx:[]};
+ const s=Math.min(1.6,e.r/11)*1.0;ctx.save();ctx.translate(c*cw+cw/2,r*ch+ch-12);ctx.scale(s*(e.boss?.7:1),s*(e.boss?.7:1));DV_MART.body(ctx,e,G,2);ctx.restore();
+}));
+window.DONE=1;
+</script>
