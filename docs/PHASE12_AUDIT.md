@@ -42,12 +42,12 @@ Phân tích dựa trên mã nguồn thực tế của bản `phase12-progress-vf
 
 ## C. Quyết định cần chốt trước các phần sau
 1. **Không có máy chủ**: BXH, Boss thế giới, PvP chỉ có thể là mô phỏng cục bộ (bot/ghost). Muốn thật cần backend.
-2. **6 ô hay 7 ô trang bị** (hiện 7).
+2. **6 ô hay 7 ô trang bị** → ✅ chốt **7 ô**, trang bị & Võ học **theo từng tướng** (P3).
 3. **Tổ đội 2 người** là hệ thống hoàn toàn mới: cần định nghĩa tướng hỗ trợ đánh thế nào trong trận (AI đi theo? chỉ cộng buff + combo kích hoạt?).
 4. **Art "không placeholder"**: trang bị găng/giày vẫn dùng emoji (thiếu `it_n*`, `it_f*`); ảnh nền menu/boss cũ là ảnh tĩnh.
 
 ## D. Lộ trình (mỗi phần: làm → test → mới sang phần sau)
-P1 Vượt ải ✅ (xong Quét + Tinh Anh) · P2 Main Menu/tướng ✅ · P3 Nâng cấp tướng/trang bị/võ công (+ Set, Phù Văn) · P4 Bí Cảnh/Thử Luyện/Boss · P5 Event ngày + Season · P6 Môn Phái + Cảnh giới · P7 Tổ đội + Combo · P8 PvP + BXH · P9 Nhiệm vụ/Thành tựu/Login · P10 VFX/UI/hiệu năng.
+P1 Vượt ải ✅ (xong Quét + Tinh Anh) · P2 Main Menu/tướng ✅ · P3 Nâng cấp tướng/trang bị/võ công (+ Set, Phù Văn) ✅ (chưa có Trận Pháp) · P4 Bí Cảnh/Thử Luyện/Boss · P5 Event ngày + Season · P6 Môn Phái + Cảnh giới · P7 Tổ đội + Combo · P8 PvP + BXH · P9 Nhiệm vụ/Thành tựu/Login · P10 VFX/UI/hiệu năng.
 
 ## E. Phase 12-P1 — đã triển khai
 - `data/modes.js` (`DV_DATA.modes`): luật Tinh Anh + Quét; `hard(stage)` tạo bản Tinh Anh của **mọi** 312 màn từ dữ liệu thường (không nhân đôi dữ liệu).

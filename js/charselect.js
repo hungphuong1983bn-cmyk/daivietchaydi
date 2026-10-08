@@ -30,7 +30,7 @@ const CSS=`
 #hsel .pb{overflow:auto;padding:8px 12px;font-size:12px;-webkit-overflow-scrolling:touch;min-height:0;flex:1}
 #hsel .sr{display:flex;align-items:center;gap:8px;margin:4px 0}#hsel .sr span{width:62px;opacity:.85}#hsel .sr .t{flex:1;height:8px;border-radius:5px;background:#201a38;overflow:hidden}#hsel .sr .t i{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,var(--c),#ffd978);transition:width .5s}#hsel .sr b{width:56px;text-align:right}
 #hsel .it{margin:5px 0;padding:6px 8px;border-radius:8px;background:rgba(255,255,255,.05)}#hsel .it b{color:#ffd978}#hsel .it small{display:block;opacity:.8;margin-top:1px}
-#hsel .eq{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;text-align:center}#hsel .eq div{padding:6px 2px;border:1px solid #6b5326;border-radius:10px;background:rgba(255,255,255,.04)}#hsel .eq .i{font-size:22px}#hsel .eq small{display:block;font-size:9.5px;opacity:.85;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#hsel .eq{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;text-align:center}#hsel .eq div{padding:6px 2px;border:1px solid #6b5326;border-radius:10px;background:rgba(255,255,255,.04)}#hsel .eq .i{font-size:22px}#hsel .eq small{display:block;font-size:9.5px;opacity:.85;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #hsel .ft{display:flex;gap:8px;padding:8px 10px calc(env(safe-area-inset-bottom) + 10px);background:rgba(8,10,24,.96);border-top:1px solid #a8802f}
 #hsel .ft .btn{flex:1;max-width:none;justify-content:center;min-height:48px;font-weight:800}
 #hsel .ft .btn[disabled]{filter:grayscale(.8);opacity:.6}
@@ -45,7 +45,7 @@ function panel(h){
     :`<div class="it"><b>${h.st}</b></div><div class="it">HP +${h.hp} · Công +${Math.round(h.am*1000)/10}% · Tốc +${Math.round(h.sp*1000)/10}% · Bạo +${Math.round(h.cr*1000)/10}%</div>`}
   if(tab===1){const c=h.prof;if(!c)return`<div class="it"><b>Võ công khởi đầu</b><small>${h.st}</small></div><div class="it"><b>Nội tại</b><small>${h.pa}</small></div>`;
     return`<div class="it"><b>⚔ ${c.weapon.name}</b><small>${c.weapon.d}</small></div><div class="it"><b>🌀 Nội tại · ${c.passive.name}</b><small>${c.passive.d}</small></div>`+c.skills.map((k,i)=>`<div class="it"><b>${i+1}. ${k.name}</b><small>${k.d}</small></div>`).join('')+`<div class="it"><b>🐉 Tuyệt kỹ · ${c.ultimate.name}</b><small>${c.ultimate.d}</small></div>`}
-  return'<div class="eq">'+h.eq.map(e=>`<div><div class="i">${e.i}</div><small>${e.n}</small></div>`).join('')+'</div><div class="it" style="margin-top:8px"><small>Trang bị dùng chung cho mọi tướng. Thay đổi trong mục Trang bị / Túi.</small></div>'}
+  return'<div class="eq">'+h.eq.map(e=>`<div><div class="i">${e.i}</div><small>${e.n}</small></div>`).join('')+'</div><div class="it" style="margin-top:8px"><small>Trang bị riêng từng tướng (7 ô). Bấm ⬆ NÂNG CẤP để thay đổi.</small></div>'}
 function fill(){
   const id=ids[idx],h=ctx.hero(id);root.style.setProperty('--c',h.col||'#2f5aa8');
   $('.stg',root).classList.toggle('lk',!h.un);
@@ -55,7 +55,7 @@ function fill(){
   [...root.querySelectorAll('.tbs button')].forEach((b,i)=>b.classList.toggle('on',i===tab));
   const b=$('#hs-pick',root);b.textContent=h.sel?'✔ ĐANG DÙNG':h.un?'CHỌN NHÂN VẬT':('MUA · '+(h.cost||''));b.disabled=!!h.sel||(!h.un&&!h.buy);
   b.dataset.mode=h.un?'pick':'buy';
-  $('#hs-prof',root).style.display=h.prof?'':'none';
+  $('#hs-prof',root).style.display=h.prof?'':'none';$('#hs-up',root).style.display=h.un&&ctx.up?'':'none';
 }
 function loop(now){
   const cv=$('canvas',root);if(!cv||!root.isConnected)return;const dpr=Math.min(2,devicePixelRatio||1),r=cv.getBoundingClientRect(),W=Math.max(1,r.width|0),H=Math.max(1,r.height|0);
@@ -84,13 +84,14 @@ function open(c){
   root.innerHTML=`<div class="bg"></div><div class="tb"><button class="rb" id="hs-x" aria-label="Đóng">✕</button><b>NHÂN VẬT</b><button class="rb" id="hs-ls">☰ Danh sách</button></div>
   <div class="stg"><canvas></canvas><button class="ar l" aria-label="Trước">‹</button><button class="ar r" aria-label="Sau">›</button></div>
   <div class="side"><div class="nm"></div><div class="dots"></div><div class="pn"><div class="tbs"><button>Thuộc tính</button><button>Võ công</button><button>Trang bị</button></div><div class="pb"></div></div></div>
-  <div class="ft"><button class="btn" id="hs-prof">📜 Hồ sơ</button><button class="btn gold" id="hs-pick"></button></div>`;
+  <div class="ft"><button class="btn" id="hs-prof">📜 Hồ sơ</button><button class="btn" id="hs-up">⬆ NÂNG CẤP</button><button class="btn gold" id="hs-pick"></button></div>`;
   ($('#app')||document.body).appendChild(root);
   $('#hs-x',root).onclick=()=>{close();ctx.close&&ctx.close()};
   $('#hs-ls',root).onclick=()=>{close();ctx.list()};
   $('.ar.l',root).onclick=()=>go(-1);$('.ar.r',root).onclick=()=>go(1);
   root.querySelectorAll('.tbs button').forEach((b,i)=>b.onclick=()=>{tab=i;fill()});
   $('#hs-prof',root).onclick=()=>{close();ctx.profile(ids[idx])};
+  $('#hs-up',root).onclick=()=>{const id=ids[idx];close();ctx.up(id)};
   $('#hs-pick',root).onclick=e=>{const id=ids[idx],h=ctx.hero(id);if(e.currentTarget.dataset.mode==='pick'){if(!h.sel){ctx.pick(id);fill();const a=$('#hs-pick',root);a.animate&&a.animate([{transform:'scale(1.08)'},{transform:'scale(1)'}],200)}}else{close();ctx.list()}};
   const sg=$('.stg',root);
   sg.addEventListener('pointerdown',e=>{drag={x:e.clientX,t:performance.now(),m:0};sg.setPointerCapture(e.pointerId)});

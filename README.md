@@ -93,3 +93,7 @@ Nhân vật Q版 (`js/chibi.js`: mặt riêng, trang bị đổi hình theo ph�
 
 ## Phase 12 — Part 2: Main Menu + Hồ sơ tướng
 `js/herodata.js` (`DV_HERO.record`) gom hồ sơ 19 trường cho từng tướng; Main Menu thêm dải Nhiệm vụ/Sự kiện/Chưa nhận, 7 ô trang bị, nút VÀO GIANG HỒ, Môn phái, Bí cảnh và chấm đỏ mới. Xem `docs/PHASE12_P2_MENU_HERO.md`. Test: `python3 tests/test_menu.py`.
+
+
+## Phase 12 · Part 3 — Nâng cấp Tướng / Trang bị / Võ học
+Trang bị (7 ô) và Võ học tách riêng **theo từng tướng**; thêm Set trang bị, Phù Văn, màn **NÂNG CẤP TƯỚNG** 4 tab (`js/upgrade.js`, dữ liệu `data/upgrade.js`). Save v4 tự migrate từ v3. Xem `docs/PHASE12_P3_UPGRADE.md`. Kiểm thử: `python3 tests/test_upgrade.py`.
