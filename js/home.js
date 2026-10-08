@@ -98,7 +98,7 @@ function sync(o){
   const pg=chap.lastChild,n=o.total||6;
   if(pg.children.length!==n)pg.innerHTML='<i></i>'.repeat(n);
   [...pg.children].forEach((i,k)=>i.classList.toggle('d',k<o.done));
-  const b=$('#b-fight');if(b){const t=o.allDone?'CHƠI LẠI / ÔN LUYỆN':'TIẾP TỤC PHIÊU LƯU';const sub=o.next?'Màn '+(o.c+1)+'-'+String(o.next).padStart(2,'0')+' · '+o.name:o.name;
+  const b=$('#b-fight');if(b){const t=o.allDone?'CHƠI LẠI / ÔN LUYỆN':'VÀO GIANG HỒ';const sub=o.next?'Màn '+(o.c+1)+'-'+String(o.next).padStart(2,'0')+' · '+o.name:o.name;
     if(b.dataset.k!==t+sub){b.dataset.k=t+sub;b.innerHTML=`<span>⚔ ${t}</span><small>${sub}</small>`}}
 }
 function loading(c,name,hue,cb){

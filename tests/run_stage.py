@@ -14,7 +14,7 @@ async (o) => {
   let done = false;
   for (let r = 0; r < 4 && !done; r++) for (let l = 1; l <= 80; l++) { setG(r, l); if (d.pwr() >= want) { done = true; break; } }
   const myPow = d.pwr();
-  d.begin(c0, i); d.run(false);
+  d.begin(c0, i, o.h); d.run(false);
   let G = d.G(); G.dbg = {}; const P = G.p, inp = d.inp();
   const out = { stageId: st.stageId, role: st.role, dur: st.duration, bossAt: st.bossAt, par: st.parTime, recPow: st.recommendedPower, myPow,
     waveSeen: [], evFire: {}, hpMin: 1, dmgTaken: 0, dmgPerMin: [], aliveMax: 0, aliveAvg: 0, elitesSeen: 0, minisSeen: 0, bossSeen: 0, abil: {}, steps: 0 };

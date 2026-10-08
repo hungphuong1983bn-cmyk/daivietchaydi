@@ -86,3 +86,10 @@ Nhân vật Q版 (`js/chibi.js`: mặt riêng, trang bị đổi hình theo ph�
 
 ## Phase 10 — VFX chiến đấu
 `js/vfx.js` (`DV_VFX`): mỗi kỹ năng một hình + màu riêng (Kiếm Khí · Lôi Động · Hàng Long Chưởng · Phi Kiếm, kèm biến thể Tiến Hoá), 7 tuyệt kỹ theo tướng (ánh sáng/đao khí+lửa/băng/sét/độc/vòng năng lượng+gió), hit effect theo nguồn đòn, vệt đuôi đạn, vụ nổ, đạn & vùng báo đòn của kẻ địch theo chủ đề, rung màn hình nhẹ. Có trần hiệu ứng theo đồ hoạ và không phủ kín màn hình. Thiếu file → dùng hiệu ứng cũ. Xem `docs/PHASE10_VFX.md`. Kiểm thử: `python3 tests/vfx_test.py OUT [0|1|2]`.
+
+
+## Phase 12 — Part 1: Ải Tinh Anh + Quét Ải
+`data/modes.js` (`DV_DATA.modes`) + hook trong `index.html`. Màn đạt 3★ mở **QUÉT ẢI** (×1/×n) và **ẢI TINH ANH** (quái/Boss mạnh hơn, thưởng hiếm hơn, ⚡10, 3 lượt/màn/ngày). Xem `docs/PHASE12_AUDIT.md` (kiểm kê hệ thống + lộ trình các phần còn lại). Test: `python3 tests/test_modes.py`.
+
+## Phase 12 — Part 2: Main Menu + Hồ sơ tướng
+`js/herodata.js` (`DV_HERO.record`) gom hồ sơ 19 trường cho từng tướng; Main Menu thêm dải Nhiệm vụ/Sự kiện/Chưa nhận, 7 ô trang bị, nút VÀO GIANG HỒ, Môn phái, Bí cảnh và chấm đỏ mới. Xem `docs/PHASE12_P2_MENU_HERO.md`. Test: `python3 tests/test_menu.py`.
