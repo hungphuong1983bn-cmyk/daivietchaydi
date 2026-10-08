@@ -208,6 +208,7 @@ html,body{overscroll-behavior:none;height:100dvh}#mb{-webkit-overflow-scrolling:
 <script src="js/home.js"></script>
 <script src="js/charselect.js"></script>
 <script src="js/chmap.js"></script>
+<script src="js/heroshow.js"></script>
 <script>
 (()=>{
 const $=s=>document.querySelector(s),M=Math,R=Math.random,cv=$('#cv'),ctx=cv.getContext('2d');
@@ -642,6 +643,8 @@ const VH=[
  {k:'kp',t:'Kiếm Pháp',i:'⚔️',n:[{c:500,e:{am:.05},d:'Công +5%'},{c:1500,e:{am:.08},d:'Công +8%'},{c:4000,e:{cr:.06},d:'Bạo kích +6%'}]},
  {k:'nc',t:'Nội Công',i:'🧘',n:[{c:400,e:{hp:30},d:'Sinh lực +30'},{c:1200,e:{hp:50},d:'Sinh lực +50'},{c:3500,e:{hp:80},d:'Sinh lực +80'}]},
  {k:'kc',t:'Khinh Công',i:'🍃',n:[{c:600,e:{sp:.04},d:'Tốc độ +4%'},{c:1800,e:{sp:.06},d:'Tốc độ +6%'},{c:4500,e:{dg:.05},d:'Né đòn +5%'}]}];
+const learnVH=id=>{const b=VH.find(x=>x.k===id.slice(0,2)),j=+id.slice(2),n=b&&b.n[j];if(!n||sv.vh[id]||(j&&!sv.vh[b.k+(j-1)])||sv.gold<n.c)return 0;sv.gold-=n.c;evc('spent',n.c);sv.vh[id]=1;put();sfx('u');return 1};
+const vhNext=()=>{let r=null;for(const b of VH){let j=0;while(j<b.n.length&&sv.vh[b.k+j])j++;if(j<b.n.length&&(!r||b.n[j].c<r.n.c))r={b,j,n:b.n[j],id:b.k+j}}return r};
 const vhHtml=()=>`<div style="font-size:12px;opacity:.8;margin-bottom:6px">🪙 ${sv.gold} · Học tuần tự từng tầng</div>`+VH.map(b=>`<div class="sc" style="--c:#a8802f"><div class="ic">${b.i}</div><div style="flex:1"><b>${b.t}</b>${b.n.map((n,j)=>{const ok=sv.vh[b.k+j],lk=j&&!sv.vh[b.k+j-1];return`<small style="display:flex;justify-content:space-between;align-items:center;gap:6px">${n.d}${ok?'<b style="color:#7dff9a">✔ Đã học</b>':`<button class="btn gold" data-vh="${b.k}${j}" style="width:auto;padding:4px 9px;font-size:11px;${lk||sv.gold<n.c?'filter:grayscale(.9);opacity:.6':''}">${lk?'🔒':'🪙'+n.c}</button>`}</small>`}).join('')}</div></div>`).join('');
 function renderHero(){view='hero';info('TƯỚNG',`<div style="font-size:12px;opacity:.8;margin-bottom:6px">🪙 ${sv.gold} · 💎 ${sv.gem} · Tướng lên cấp bằng EXP sau mỗi ván (+5% chỉ số/cấp) · mỗi ★ tăng trần cấp +5</div>`+HEROES.filter(h=>!h.off||sv.hu[h.id]).map(h=>{const q=HQ[h.q],un=sv.hu[h.id],x=sv.hx[h.id]||{l:1,e:0},sel=sv.hs===h.id,can=h.m?sv.gem>=h.m:sv.gold>=h.g;
  return`<div class="sc" style="--c:${q[1]}"><div class="ic">${h.i}</div><div style="flex:1"><b>${h.n}</b> <b style="color:${q[1]};font-size:11px;float:right">${q[0]}</b><small>${h.st}</small><small style="color:#9fd0ff">${'★'.repeat(x.s||0)||'☆'} Lv.${x.l}/${PG.heroCap(x.s||0)} · ${x.l>=PG.heroCap(x.s||0)?'EXP MAX (dư → vàng)':'EXP '+x.e+'/'+hexp(x.l)}</small><small>HP +${h.hp} · Công +${M.round(h.am*1000)/10}% · Tốc +${M.round(h.sp*1000)/10}% · Bạo +${M.round(h.cr*1000)/10}%</small><small style="color:#ffd978">Nội tại: ${h.pa}</small>${CH&&CH.get(h.id)?`<small style="margin-top:3px"><button data-chopen="${h.id}" style="font:inherit;font-size:11px;padding:3px 9px;border-radius:12px;border:1px solid #6b5326;background:rgba(255,217,120,.1);color:#ffd978;cursor:pointer">📜 Hồ sơ · Tiến hoá${(x.aw|0)||(x.asc|0)?` · TT${x.aw|0} TG${x.asc|0}`:''}</button></small>`:''}</div><button class="btn gold" ${un?`data-hs="${h.id}"`:h.gc?'':`data-hb="${h.id}"`} style="width:auto;padding:8px 10px;font-size:12px;align-self:center;${un||can?'':'filter:grayscale(.9);opacity:.6'}">${sel?'ĐANG DÙNG':un?'CHỌN':h.gc?'🎴 Triệu hồi':h.m?'💎'+h.m:'🪙'+h.g}</button></div>`}).join(''))}
@@ -698,7 +701,8 @@ function pull(n,free){const cost=free?0:n===10?GC.x10:GC.x1;if(sv.gem<cost||(fre
   if(nw)sv.hu[h.id]=1;else if((x.s||0)<5)x.s=(x.s||0)+1;else sv.gem+=20;rs.push({h,nw})}
  sv.st.pulls+=n;qc('pulls',n);put();reveal(rs)}
 function reveal(rs){const o=document.createElement('div');o.id='sm';o.innerHTML='<div class="smc"></div>';$('#app').appendChild(o);sfx('u');const ss=rs.some(r=>r.h.q==='SSR');
- setTimeout(()=>{o.className=ss?'ssr':'';if(ss)sfx('win');o.innerHTML=`<div class="smg">${rs.map((r,i)=>`<div class="smk" style="--c:${HQ[r.h.q][1]};animation-delay:${i*.12}s"><div class="ic">${r.h.i}</div><b>${r.h.n}</b><small>${HQ[r.h.q][0]}${r.nw?' · MỚI':' · TRÙNG'}</small></div>`).join('')}</div><button class="btn gold" id="smx" style="max-width:220px;justify-content:center">NHẬN</button>`;$('#smx').onclick=()=>{o.remove();renderSummon()}},1700)}
+ const grid=()=>{o.className=ss?'ssr':'';if(ss)sfx('win');o.innerHTML=`<div class="smg">${rs.map((r,i)=>`<div class="smk" style="--c:${HQ[r.h.q][1]};animation-delay:${i*.12}s"><div class="ic" data-hid="${r.h.id}">${r.h.i}</div><b>${r.h.n}</b><small>${HQ[r.h.q][0]}${r.nw?' · MỚI':' · TRÙNG'}</small></div>`).join('')}</div><button class="btn gold" id="smx" style="max-width:220px;justify-content:center">NHẬN</button>`;$('#smx').onclick=()=>{o.remove();renderSummon()};window.DV_SHOW&&DV_SHOW.thumbs(o)};
+ setTimeout(()=>{const nw=rs.filter(r=>r.nw).map(r=>r.h.id).filter((v,i,a)=>a.indexOf(v)===i).slice(0,4);if(window.DV_SHOW&&nw.length)DV_SHOW.unlock(nw,grid);else grid()},1700)}
 function afkCheck(){const t=Date.now();if(!sv.afk){const s=M.min(AFK.cap,((t-(sv.ls||t))/1000)|0);sv.ls=t;if(s<AFK.minS||run){put();return}
   const e=[];for(let n=M.min(8,s/7200|0);n>0;n--)e.push(mk('wahbrnf'[R()*7|0],rollR(M.min(30,sv.un*2))));sv.afk={s,g:M.round(s*(3+sv.un*1.2)),x:M.round(s*(2+sv.un*.8)),m:M.round(s/300),e}}
  put();if(run||!sv.afk)return;const a=sv.afk;info('PHẦN THƯỞNG NGOẠI TUYẾN',`<div class="panel" style="margin:0"><div class="row"><span>Thời gian</span><b>${hms(a.s)}</b></div><div class="row"><span>🪙 Gold</span><b>+${a.g.toLocaleString('vi')}</b></div><div class="row"><span>✨ EXP tướng</span><b>+${a.x.toLocaleString('vi')}</b></div><div class="row"><span>🗡 Trang bị</span><b>+${a.e.length}</b></div><div class="row"><span>⚙ Tinh thiết</span><b>+${a.m}</b></div></div><button class="btn gold" data-afk="1" style="justify-content:center;max-width:none;margin-top:10px">NHẬN</button>`)}
@@ -877,8 +881,8 @@ $('#mb').onclick=e=>{const t=e.target.closest('[data-s],[data-eq],[data-un],[dat
  else if(d.qc){const q=QS.find(x=>x.id===d.qc),st=q.t==='m'?sv.ach:sv.qd.c,k=q.t==='m'?'m_'+q.id:q.id;qdR();if(!st[k]&&q.v()>=q.tg){st[k]=1;sv.gold+=q.r.g||0;sv.gem+=q.r.m||0;bpx(q.t==='d'?20:q.t==='w'?100:30);put();sfx('u');rwp(q.r)}renderQuest()}
  else if(d.rf){const i=f(d.rf);if((i.rf||0)<5&&(sv.mt||0)>=rfc(i)&&sv.gold>=rfg(i)){sv.mt-=rfc(i);evc('spent',rfg(i));sv.gold-=rfg(i);i.rf=(i.rf||0)+1;qc('ups',1);put();sfx('u')}rr2()}
  else if(d.hs){sv.hs=d.hs;put();sfx('u');renderHero()}
- else if(d.hb){const h=HEROES.find(x=>x.id===d.hb);if(h.m?sv.gem>=h.m:sv.gold>=h.g){if(h.m)sv.gem-=h.m;else sv.gold-=h.g;sv.hu[h.id]=1;sv.hs=h.id;put();sfx('u')}renderHero()}
- else if(d.vh){const b=VH.find(x=>x.k===d.vh.slice(0,2)),j=+d.vh.slice(2),n=b.n[j];if(!sv.vh[d.vh]&&(!j||sv.vh[b.k+(j-1)])&&sv.gold>=n.c){sv.gold-=n.c;evc('spent',n.c);sv.vh[d.vh]=1;put();sfx('u')}renderSkill('Võ học')}
+ else if(d.hb){const h=HEROES.find(x=>x.id===d.hb);if(h.m?sv.gem>=h.m:sv.gold>=h.g){if(h.m)sv.gem-=h.m;else sv.gold-=h.g;sv.hu[h.id]=1;sv.hs=h.id;put();sfx('u');window.DV_SHOW&&DV_SHOW.unlock([h.id])}renderHero()}
+ else if(d.vh){learnVH(d.vh);renderSkill('Võ học')}
  else if(d.s){curSlot=d.s;renderChar()}
  else if(d.inv){selU=d.inv;renderInv()}
  else if(d.ft){ftab=d.ft;renderInv()}
@@ -960,6 +964,7 @@ function homeSync(){if(!window.DV_HOME)return;const c=sv.map,m=MAPS[c],S=STG(c).
 $('#b-fight').onclick=()=>{const c=sv.map,S=STG(c).filter(x=>x.t!=='v'),nx=S.find(x=>!sv.cl[c+'-'+x.i]&&okS(c,x))||S.filter(x=>okS(c,x)).pop();const b=$('#b-fight');b.classList.add('go');setTimeout(()=>b.classList.remove('go'),400);if(nx)go(c+'-'+nx.i);else renderMap(c)};
 setInterval(()=>{document.querySelectorAll('[data-cd]').forEach(s=>s.textContent=cdf(+s.dataset.cd-Date.now()));if(!run&&$('#menu').classList.contains('on'))home()},1000);
 home();
+if(window.DV_SHOW)DV_SHOW.bind({sv:()=>sv,HEROES,HQ,hexp,cap:s=>PG.heroCap(s),hxUp,put,sfx,toast,home,pwr,bon,vh:{books:()=>VH,next:vhNext,learn:learnVH}});home();
 
 const soon='<div class="panel" style="text-align:center;margin:0">Tính năng đang được phát triển.<br>Sẽ ra mắt ở bản cập nhật sau.</div>';
 const selHero=id=>{const h=HEROES.find(x=>x.id===id),x=sv.hx[id]||{l:1,e:0},un=!!sv.hu[id],pr=CH?CH.prog(id):{aw:0,asc:0},c=CH&&CH.get(id),q=HQ[h.q],o=sv.hs;let pw=0;sv.hs=id;try{pw=pwr()}finally{sv.hs=o}
