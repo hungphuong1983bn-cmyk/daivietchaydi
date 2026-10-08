@@ -27,7 +27,7 @@ const AMB = {
   leaf: { c: '#9bd36a', d: [.22, 1], sp: .08, sh: 'leaf' }, guard: { c: '#ffd978', d: [0, -1], sp: .06, sh: 'mote' }, sun: { c: '#fff1a8', d: [0, -1], sp: .1, sh: 'ray' }
 };
 /* Thời lượng chuỗi hiệu ứng; hold = tỉ lệ giai đoạn TÍCH TỤ (trước khi bùng nổ, lúc đó số liệu còn giữ nguyên) */
-const SEQ = { lvl: { T: 2.0, hold: .42, st: 'victory' }, star: { T: 2.2, hold: .42, st: 'victory' }, realm: { T: 3.8, hold: .62, st: 'ultimate' }, skill: { T: 1.8, hold: .3, st: 'skill' }, eq: { T: 1.1, hold: 0, st: 'skill' } };
+const SEQ = { lvl: { T: 2.0, hold: .42, st: 'victory' }, star: { T: 2.2, hold: .42, st: 'victory' }, realm: { T: 3.8, hold: .62, st: 'ultimate' }, learn: { T: 2.3, hold: .5, st: 'skill' }, skillup: { T: 2.0, hold: .38, st: 'skill' }, eq: { T: 1.1, hold: 0, st: 'skill' } };
 
 const STYLE = `
 #hhero{width:100%;animation:none!important}#hhero canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
@@ -65,9 +65,22 @@ const STYLE = `
 #hun .un{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom) + 7%);text-align:center;color:#fff3d0;pointer-events:none}
 #hun .un small{display:block;letter-spacing:4px;font-size:13px;color:#ffd978;opacity:0}#hun .un h2{margin:2px 0;font-size:30px;text-shadow:0 0 18px var(--c),0 3px 8px #000;opacity:0;transform:translateY(14px)}
 #hun .un p{margin:0;font-size:13px;opacity:0;color:#e8d8b0}#hun .un .rt{display:inline-block;margin-top:8px;padding:2px 16px;border-radius:14px;border:2px solid var(--c);color:var(--c);font-weight:900;font-size:18px;letter-spacing:2px;opacity:0;background:rgba(0,0,0,.45)}
-#hun .un .tp{margin-top:14px;font-size:12px;opacity:0;color:#b9a77a}#hun.s1 small,#hun.s1 h2{opacity:1;transform:none;transition:.5s}#hun.s2 p,#hun.s2 .rt{opacity:1;transition:.5s}#hun.s3 .tp{opacity:.9;transition:.6s;animation:hbl 1.4s infinite}@keyframes hbl{50%{opacity:.35}}`;
+#hun .un .tp{margin-top:14px;font-size:12px;opacity:0;color:#b9a77a}#hun.s1 small,#hun.s1 h2{opacity:1;transform:none;transition:.5s}#hun.s2 p,#hun.s2 .rt{opacity:1;transition:.5s}#hun.s3 .tp{opacity:.9;transition:.6s;animation:hbl 1.4s infinite}@keyframes hbl{50%{opacity:.35}}
+#menu>#hfxs{position:absolute!important;inset:0;width:auto!important;z-index:15!important;pointer-events:none}
+#menu>#hmid.hshk{animation:hshk .55s}@keyframes hshk{10%{transform:translate(-6px,3px)}25%{transform:translate(6px,-4px)}40%{transform:translate(-4px,-3px)}55%{transform:translate(4px,3px)}75%{transform:translate(-2px,1px)}}
+#menu>#hgr{position:absolute!important;inset:0;width:auto!important;z-index:30!important;display:flex;align-items:center;justify-content:center;background:rgba(3,2,10,.78);animation:hshi .25s both}
+#hgr canvas{position:absolute;inset:0;width:100%;height:100%}
+#hgr .cd{position:relative;width:78%;max-width:320px;padding:18px 14px 14px;text-align:center;border:2px solid var(--c);border-radius:20px;background:linear-gradient(#2a1d44,#0d0b20);color:#f3e3b8;box-shadow:0 0 30px var(--c),inset 0 0 22px rgba(255,255,255,.06);animation:hgin .6s cubic-bezier(.2,1.5,.4,1) both}@keyframes hgin{from{transform:scale(.3) rotate(-6deg);opacity:0}}
+#hgr .rb{display:inline-block;padding:2px 18px;margin-top:-30px;border-radius:12px;background:var(--c);color:#1a0f08;font-weight:900;letter-spacing:3px;font-size:14px;box-shadow:0 0 14px var(--c)}
+#hgr .ic{width:104px;height:104px;margin:12px auto 6px;font-size:70px;line-height:104px;border-radius:22px;border:2px solid var(--c);background:radial-gradient(var(--c),rgba(0,0,0,.4));box-shadow:0 0 26px var(--c);animation:hgf 2.4s ease-in-out infinite}
+#hgr .ic img{width:100%;height:100%;object-fit:contain;border-radius:20px}@keyframes hgf{50%{transform:translateY(-5px) scale(1.04)}}
+#hgr h3{margin:4px 0 0;font-size:20px;color:#fff3d0;text-shadow:0 0 12px var(--c)}#hgr p{margin:3px 0;font-size:13px;opacity:.9}#hgr .st{color:#7dff9a;font-weight:800}#hgr .mr{margin:6px 0 2px;font-size:12px;opacity:.85}
+#hgr .bb{display:flex;gap:8px;margin-top:12px}#hgr .bb button{flex:1;min-height:42px;font:inherit;font-weight:800;font-size:13px;border-radius:12px;border:1px solid #ffd978;color:#3a1a12;background:linear-gradient(#ffe48f,#e3881c);cursor:pointer}#hgr .bb button.cn{background:rgba(255,255,255,.08);color:#f3e3b8;border-color:#6b5326}
+#hun.shk canvas{animation:hshk .55s}#hun.s2 .rt{animation:hpop .55s both}@keyframes hpop{from{transform:scale(2.6);opacity:0}}
+#hun.big .un h2{font-size:36px;animation:hglow 1.6s ease-in-out infinite}@keyframes hglow{50%{text-shadow:0 0 34px var(--c),0 0 10px #fff,0 3px 8px #000}}
+#hun .fl{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}`;
 
-let B, cv, cx, pn, fx, dim, hh, sh, skb, tint, snap, key = '', clock = 0, st = 'idle', stT = 0, last = 0, seq = null, swap = 1, ps = [], cv_ = [], zoom = 1, say, sheet = null, lastSt = {}, ambK = '';
+let B, cv, cx, pn, fx, dim, hh, sh, skb, tint, snap, key = '', clock = 0, st = 'idle', stT = 0, last = 0, seq = null, swap = 1, ps = [], cv_ = [], zoom = 1, say, sheet = null, lastSt = {}, ambK = '', sc, sg, scOn = false, sl = 0, E = [], anc = { x: 0, y: 0, fy: 0, S: 2 }, pendGear = null, unl = new Set();
 const CH = () => window.DV_CHAR && DV_CHAR.ok() ? DV_CHAR : null, sv = () => B.sv();
 const eqSig = () => { const s = sv(); return SLOTS.map(([k]) => { const i = s.inv.find(x => x.u === s.eqp[k]); return i ? k + i.r + '.' + i.l : k }).join(); };
 const eqR = k => { const s = sv(), i = s.inv.find(x => x.u === s.eqp[k]); return i ? i.r : -1 };
@@ -104,11 +117,11 @@ function play(k, label, sub, o2) {
   fx.innerHTML = (o2 && o2.ico ? '<span>' + o2.ico + '</span>' : '') + label + (sub ? '<small>' + sub + '</small>' : ''); fx.classList.remove('on'); void fx.offsetWidth;
   fx.style.animationDelay = (seq.hold * seq.T) + 's'; fx.classList.add('on');
   if (k === 'realm') { dim.classList.add('on'); setTimeout(() => dim.classList.remove('on'), seq.T * 1000 - 200) }
-  st = d.st; stT = 0; B.sfx && B.sfx('u');
+  st = d.st; stT = 0; if (say) say.classList.remove('on'); vfxFor(k, o2);
 }
-const overlay = () => { const m = $('#modal'); return (m && m.classList.contains('on')) || $('#hsel') || $('#sm') || $('#hun') || $('#hsh.on') || $('#hload') || $('#cmap') || $('#hch') };
+const overlay = () => { const m = $('#modal'); return (m && m.classList.contains('on')) || $('#hgr') || $('#hsel') || $('#sm') || $('#hun') || $('#hsh.on') || $('#hload') || $('#cmap') || $('#hch') };
 function detect(o) {
-  const s = sv(), cur_ = { id: o.id, l: o.p.l, s: o.p.s, aw: o.p.aw, asc: o.p.asc, e: eqSig(), vh: vhKeys(), si: o.si + '/' + o.F.length, g: s.gold + s.gem };
+  const s = sv(), cur_ = { id: o.id, l: o.p.l, s: o.p.s, aw: o.p.aw, asc: o.p.asc, e: eqSig(), vh: vhKeys(), si: o.si + '/' + o.F.length, g: s.gold + s.gem, hu: Object.keys(s.hu).filter(k => s.hu[k]).sort().join(), inv: new Set(s.inv.map(i => i.u)) };
   if (snap) {
     if (cur_.id !== snap.id) { B.home(); swap = 0; st = 'idle'; ps.length = 0; seq = null; key = '' }
     else if (cur_.aw > snap.aw || cur_.asc > snap.asc) { play('realm', 'ĐỘT PHÁ!', realmName(o)); delete o.H.skin }
@@ -116,11 +129,16 @@ function detect(o) {
     else if (cur_.l > snap.l) play('lvl', 'LEVEL UP!', 'Lv.' + snap.l + ' → Lv.' + cur_.l);
     else if (cur_.vh !== snap.vh) {
       const nk = cur_.vh.split(',').find(k => k && snap.vh.split(',').indexOf(k) < 0) || '', bk = B.vh.books().find(b => b.k === nk.slice(0, 2)), j = +nk.slice(2) || 0;
-      play('skill', 'SKILL UPGRADED', bk ? bk.t + ' · Tầng ' + (j + 1) + ' — ' + bk.n[j].d : '', { ico: bk ? bk.i : '📖', col: '#7dffc0' });
+      const bi = B.vh.books().indexOf(bk), col = ['#ffb347', '#7dffc0', '#7ad7ff'][bi < 0 ? 1 : bi % 3], sub = bk ? bk.t + ' · Tầng ' + (j + 1) + ' — ' + bk.n[j].d : '';
+      if (j === 0) play('learn', 'HỌC VÕ CÔNG', sub, { ico: bk ? bk.i : '📖', col }); else play('skillup', 'SKILL UPGRADED', sub, { ico: bk ? bk.i : '📖', col });
     }
     else if (cur_.e !== snap.e) { const er = eqTop(); play('eq', '', '', { col: EQC[er] }); fx.classList.remove('on') }
     else if (cur_.si !== snap.si) { swap = .3 }
     else if (cur_.g > snap.g && !seq) { st = 'victory'; stT = 0; speak(REW[R() * REW.length | 0]) }
+  }
+  if (snap) {
+    const ni = s.inv.filter(i => !snap.inv.has(i.u) && i.r >= 1); if (ni.length) pendGear = (pendGear || []).concat(ni);
+    const nh = cur_.hu.split(',').filter(k => k && snap.hu.split(',').indexOf(k) < 0 && !unl.has(k)); if (nh.length) { nh.forEach(k => unl.add(k)); unlock(nh) }
   }
   snap = cur_;
 }
@@ -217,7 +235,7 @@ function frame(now) {
   const menu = $('#menu'); if (!B || !menu || !menu.classList.contains('on') || document.hidden) { last = 0; return }
   const dt = M.min(.05, (now - (last || now)) / 1000); last = now; clock += dt; stT += dt;
   const o = cur(), busy = overlay();
-  if (!busy) { detect(o); if (!(seq && seq.k !== 'eq' && seq.t / seq.T < seq.hold)) panel(o) }
+  if (!busy) { detect(o); if (pendGear && !seq) { gearCard(pendGear); pendGear = null } if (!(seq && seq.k !== 'eq' && seq.t / seq.T < seq.hold)) panel(o) }
   if (seq) seq.t += dt;
   const r = hh.getBoundingClientRect(), dpr = M.min(2, devicePixelRatio || 1), W = M.max(1, r.width | 0), H = M.max(1, r.height | 0);
   if (cv.width !== W * dpr || cv.height !== H * dpr) { cv.width = W * dpr; cv.height = H * dpr }
@@ -229,6 +247,7 @@ function frame(now) {
   /* khung hiển thị: tướng đứng trên bảng thông tin, không bị che */
   const ph = pn.offsetHeight || 140, free = M.max(90, H - ph - 4), fy = free - 4, S = M.min(free / 92, W / 118) * (RM ? 1 : 1);
   const u = seq ? seq.t / seq.T : 0, cu = seq ? (seq.hold ? clamp(u / seq.hold, 0, 1) : 1) : 0, bu = seq && seq.hold ? clamp((u - seq.hold) / (1 - seq.hold), 0, .999) : seq ? clamp(u, 0, .999) : 0;
+  anc = { x: r.left - menu.getBoundingClientRect().left + W / 2, y: r.top - menu.getBoundingClientRect().top + fy - 30 * S, fy: r.top - menu.getBoundingClientRect().top + fy, S };
   zoom += ((seq && seq.k === 'realm' && u < .85 && !RM ? 1.2 : 1) - zoom) * M.min(1, dt * 4.5);
   const ac = seq && seq.col ? seq.col : EQC[er] || q, g = cx.createRadialGradient(W / 2, fy - 30 * S, 4, W / 2, fy - 30 * S, free * .62); g.addColorStop(0, ac + '70'); g.addColorStop(1, ac + '00');
   cx.fillStyle = g; cx.fillRect(0, 0, W, H);
@@ -237,7 +256,7 @@ function frame(now) {
   const bodyY = fy - 30 * S; let flash = 0;
   /* GIAI ĐOẠN TÍCH TỤ: năng lượng hội tụ, ánh sáng tăng dần, vòng/pháp trận dưới chân */
   if (seq && seq.k !== 'eq' && cu > 0 && bu === 0 || seq && seq.k !== 'eq' && bu > 0) {
-    const rl = seq.k === 'realm', cc = rl ? '#c79bff' : seq.k === 'skill' ? '#7dffc0' : '#ffd978', k = bu > 0 ? 1 - bu : cu, ru = bu > 0 ? 1 : cu;
+    const rl = seq.k === 'realm', cc = rl ? '#c79bff' : (seq.col && seq.k !== 'eq') ? seq.col : '#ffd978', k = bu > 0 ? 1 - bu : cu, ru = bu > 0 ? 1 : cu;
     const gl = cx.createLinearGradient(0, fy, 0, fy - 100 * S); gl.addColorStop(0, cc + 'cc'); gl.addColorStop(1, cc + '00'); cx.globalAlpha = (rl ? .55 : .42) * k * (bu > 0 ? 1 : ru); cx.fillStyle = gl; cx.fillRect(W / 2 - 22 * S * (.5 + ru * .5), fy - 100 * S, 44 * S * (.5 + ru * .5), 100 * S); cx.globalAlpha = 1;
     cx.save(); cx.translate(W / 2, fy + 2); cx.scale(1, .32); const Rr = (rl ? .3 : .22) * H * (.55 + .45 * ease(ru)) * (1 + .1 * M.sin(clock * 6)); cx.strokeStyle = cc; cx.lineWidth = rl ? 3 : 2.5; cx.globalAlpha = k;
     cx.setLineDash([10, 6]); cx.lineDashOffset = -clock * 50; cx.beginPath(); cx.arc(0, 0, Rr, 0, TAU); cx.stroke(); cx.setLineDash([]); cx.rotate(clock * (rl ? 1.2 : 1.6)); cx.beginPath(); cx.arc(0, 0, Rr * .68, 0, TAU); cx.stroke();
@@ -254,7 +273,7 @@ function frame(now) {
     drawn = C.draw(cx, o.id, { x: W / 2, y: fy, scale: S, f: 1, t: clock, state: st, st: stT, aw: o.form.aw, asc: o.form.asc, max: !!o.form.max, q: RM ? 1 : 2, evo: 0, alpha: swap, flash }) !== false;
     /* GIAI ĐOẠN BÙNG NỔ */
     if (seq && bu > 0 && window.DV_CHIBI) {
-      const pal = d.palette, kk = seq.k === 'star' ? 'realm' : seq.k === 'eq' ? 'skl' : seq.k; cx.save(); cx.translate(W / 2, fy); cx.scale(S * 1.3, S * 1.3);
+      const pal = d.palette, kk = { star: 'realm', eq: 'skl', learn: 'skl', skillup: 'skl' }[seq.k] || seq.k; cx.save(); cx.translate(W / 2, fy); cx.scale(S * 1.3, S * 1.3);
       DV_CHIBI.burst(cx, kk, bu, pal, RM ? 0 : 2, clock, seq.col || EQC[er] || q); if (seq.k === 'realm' && bu > .3) DV_CHIBI.burst(cx, 'realm', clamp((bu - .3) / .7, 0, .999), pal, 2, clock, q); cx.restore();
       if (seq.k === 'realm' && bu > .05) for (let i = 0; i < 2; i++) { const k = clamp(bu * 1.5 - i * .18, 0, 1); cx.strokeStyle = i ? '#c79bff' : '#fff'; cx.globalAlpha = (1 - k) * .9; cx.lineWidth = 6 * (1 - k) + 1; cx.beginPath(); cx.ellipse(W / 2, fy - 18 * S, k * W * .62, k * W * .2, 0, 0, TAU); cx.stroke() }
       cx.globalAlpha = 1;
@@ -270,12 +289,13 @@ function talk() {
 
 /* ---------- cinematic mở khoá tướng mới (đúng model/phẩm chất/aura của tướng nhận được) ---------- */
 function unlock(ids, done) {
-  const C = CH(); ids = (ids || []).filter(id => C && C.get(id)); if (!ids.length) { done && done(); return }
+  const C = CH(); (ids || []).forEach(k => unl.add(k)); ids = (ids || []).filter(id => C && C.get(id)); if (!ids.length) { done && done(); return }
   const app = $('#app') || document.body, el = document.createElement('div'); el.id = 'hun';
   el.innerHTML = '<canvas></canvas><div class="un"><small>✦ TƯỚNG MỚI ✦</small><h2></h2><p></p><div class="rt"></div><div class="tp">Chạm để tiếp tục</div></div>'; app.appendChild(el);
   const c = el.firstChild, g = c.getContext('2d'), nm = $('h2', el), ds = $('p', el), rt = $('.rt', el); let i = -1, t0 = 0, alive = true, id, hd, cd, qc, pg;
+  const fl = document.createElement('div'); fl.className = 'fl'; el.appendChild(fl); let cf = [], pop = 0; unl.add(ids[0]);
   const next = () => { i++; if (i >= ids.length) { alive = false; el.remove(); done && done(); return }
-    id = ids[i]; hd = B.HEROES.find(x => x.id === id) || {}; cd = C.get(id); pg = C.prog(id); const qq = B.HQ ? B.HQ[hd.q] : [hd.q, QC[hd.q]]; qc = qq[1]; el.style.setProperty('--c', qc); el.className = '';
+    id = ids[i]; unl.add(id); cf = []; pop = 0; hd = B.HEROES.find(x => x.id === id) || {}; cd = C.get(id); pg = C.prog(id); const qq = B.HQ ? B.HQ[hd.q] : [hd.q, QC[hd.q]]; qc = qq[1]; el.style.setProperty('--c', qc); el.className = QI[hd.q] >= 4 ? 'big' : '';
     nm.textContent = hd.n || cd.name; ds.textContent = [cd.title, cd.class].filter(Boolean).join(' · '); rt.textContent = qq[0]; t0 = performance.now(); };
   el.onclick = () => { if ((performance.now() - t0) / 1000 > (RM ? .5 : 1.8)) next() };
   next();
@@ -288,6 +308,12 @@ function unlock(ids, done) {
     for (let k = 0; k < 14 + qi * 6; k++) { const ph = (clock * (.12 + (k % 5) * .03) + k * .137) % 1; g.globalAlpha = (1 - ph) * ap * .9; g.fillStyle = k % 3 ? '#fff' : qc; g.beginPath(); g.arc((.12 + (k * .173) % .76) * W + M.sin(clock + k) * 8, fy - ph * H * .6, 1.4 + (k % 3), 0, TAU); g.fill() } g.globalAlpha = 1;
     const stt = t < 1.3 ? 'idle' : t < 2.6 ? 'skill' : 'idle', stS = t < 1.3 ? t : t < 2.6 ? t - 1.3 : t;
     C.draw(g, id, { x: W / 2, y: fy, scale: S, f: 1, t: clock, state: stt, st: stS, aw: pg.aw, asc: pg.asc, max: false, q: RM ? 1 : 2, evo: RM ? 0 : M.max(0, 1 - t / 1.2), alpha: ap });
+    const pk = t > .6, tr = t - .6;
+    if (qi >= 3) { const w = 34 * S * ease(clamp((t - .25) / .5, 0, 1)), pl = g.createLinearGradient(0, fy, 0, 0); pl.addColorStop(0, qc + 'dd'); pl.addColorStop(1, qc + '00'); g.save(); g.globalCompositeOperation = 'lighter'; g.globalAlpha = .55 * clamp(1.4 - t * .35, .25, 1); g.fillStyle = pl; g.fillRect(W / 2 - w / 2, 0, w, fy); g.restore() }
+    if (pk && qi >= 1 && !RM) for (let k = 0; k < (qi >= 4 ? 3 : qi >= 2 ? 2 : 1); k++) { const u2 = (tr - k * .15) / 1; if (u2 > 0 && u2 < 1) { g.strokeStyle = k ? qc : '#fff'; g.globalAlpha = (1 - u2) * .9; g.lineWidth = 7 * (1 - u2) + 1; g.beginPath(); g.ellipse(W / 2, fy - 30 * S, u2 * W * .8, u2 * W * .26, 0, 0, TAU); g.stroke() } } g.globalAlpha = 1;
+    if (pk && !pop) { pop = 1; B.sfx && B.sfx(qi >= 3 ? 'win' : 'u'); if (qi >= 4 && !RM) { B.sfx && B.sfx('b'); el.classList.add('shk'); setTimeout(() => el.classList.remove('shk'), 600); for (let k = 0; k < 70; k++)cf.push({ x: R() * W, y: -R() * H * .4, vx: (R() - .5) * 50, vy: 90 + R() * 170, r: R() * 6, vr: (R() - .5) * 9, c: [qc, '#fff', '#ffd34a'][k % 3], s: 4 + R() * 5 }) } }
+    fl.style.opacity = qi >= 3 && !RM ? clamp(1 - tr * 2.2, 0, 1) * (qi >= 4 ? .9 : .5) * (pk ? 1 : 0) : 0;
+    cf.forEach(q => { q.x += q.vx * .016; q.y += q.vy * .016; q.r += q.vr * .016; g.save(); g.translate(q.x, q.y); g.rotate(q.r); g.fillStyle = q.c; g.globalAlpha = clamp(1 - q.y / H * .7, 0, 1); g.fillRect(-q.s / 2, -q.s / 4, q.s, q.s / 2); g.restore() }); g.globalAlpha = 1;
     el.classList.toggle('s1', t > .9); el.classList.toggle('s2', t > 1.25); el.classList.toggle('s3', t > (RM ? .5 : 1.8));
   })(performance.now());
 }
@@ -299,6 +325,71 @@ function thumbs(root) {
     C.draw(g, id, { x: w / 2, y: h - 6, scale: h / 74 * .95, f: 1, t: .5, state: 'idle', st: .5, aw: p.aw, asc: p.asc, max: C.isMax(id, p), q: 1 }); e.textContent = ''; e.appendChild(cv2) });
 }
 
+
+/* ================= LỚP VFX TOÀN MÀN HÌNH (chớp sáng, cột sáng, sóng, số bay, vật bay, tia lửa, confetti) ================= */
+const fxAdd = e => { e.t = 0; e.T = e.T || 1; E.push(e); if (!scOn && sc) { scOn = true; sl = 0; requestAnimationFrame(scLoop) } };
+const shake = () => { if (RM) return; const m = $('#hmid'); if (!m) return; m.classList.remove('hshk'); void m.offsetWidth; m.classList.add('hshk'); setTimeout(() => m.classList.remove('hshk'), 600) };
+function scLoop(now) {
+  if (!sc || !sc.isConnected) { scOn = false; return }
+  const dt = M.min(.05, (now - (sl || now)) / 1000); sl = now; const m = sc.parentNode.getBoundingClientRect(), dpr = M.min(2, devicePixelRatio || 1), W = m.width | 0, H = m.height | 0;
+  if (sc.width !== W * dpr || sc.height !== H * dpr) { sc.width = W * dpr; sc.height = H * dpr }
+  sg.setTransform(dpr, 0, 0, dpr, 0, 0); sg.clearRect(0, 0, W, H);
+  for (let i = E.length - 1; i >= 0; i--) {
+    const e = E[i]; e.t += dt; const t = e.t - (e.d || 0); if (t < 0) continue; const u = t / e.T; if (u >= 1) { E.splice(i, 1); continue }
+    const g = sg, S = anc.S, ax = anc.x, ay = anc.y; g.save();
+    if (e.k === 'flash') { g.globalAlpha = (e.a || .6) * (1 - u) * (1 - u); g.fillStyle = e.c; g.fillRect(0, 0, W, H) }
+    else if (e.k === 'pillar') { const w = (e.w || 40) * S * .5 * ease(M.min(1, u * 3)) * (1 + .08 * M.sin(t * 18)), gr = g.createLinearGradient(0, anc.fy, 0, 0); gr.addColorStop(0, e.c); gr.addColorStop(1, e.c + '00'); g.globalCompositeOperation = 'lighter'; g.globalAlpha = M.sin(M.PI * M.min(1, u * 1.15)) * .75; g.fillStyle = gr; g.fillRect(ax - w / 2, 0, w, anc.fy); g.fillStyle = '#fff'; g.globalAlpha *= .35; g.fillRect(ax - w / 6, 0, w / 3, anc.fy) }
+    else if (e.k === 'ring') { const k = 1 - (1 - u) * (1 - u); g.strokeStyle = e.c; g.globalAlpha = (1 - u) * .95; g.lineWidth = (e.lw || 6) * (1 - u) + 1; g.beginPath(); g.ellipse(ax, anc.fy - 10, k * (e.r || .8) * W, k * (e.r || .8) * W * .3, 0, 0, TAU); g.stroke() }
+    else if (e.k === 'runes') { g.strokeStyle = e.c; g.lineWidth = 2.5; for (let k = 0; k < 3; k++) { const v = (u * 1.6 + k / 3) % 1; g.globalAlpha = M.sin(M.PI * v) * .9; g.beginPath(); g.ellipse(ax, anc.fy - v * 95 * S, 30 * S * (.8 + .3 * M.sin(v * 6)), 9 * S, 0, 0, TAU); g.stroke(); g.setLineDash([5, 5]); g.beginPath(); g.ellipse(ax, anc.fy - v * 95 * S, 22 * S, 6.5 * S, 0, 0, TAU); g.stroke(); g.setLineDash([]) } }
+    else if (e.k === 'num') { const k = ease(M.min(1, u * 2.2)); g.font = '800 ' + (17 + 5 * (1 - k)) + 'px system-ui,sans-serif'; g.textAlign = 'center'; g.globalAlpha = u > .7 ? (1 - u) / .3 : 1; const x = ax + (e.dx || 0), y = ay - 8 * S - u * 52 - (e.dy || 0); g.lineWidth = 4; g.strokeStyle = '#1a0f08'; g.strokeText(e.txt, x, y); g.fillStyle = e.c; g.fillText(e.txt, x, y) }
+    else if (e.k === 'fly') { const k = u * u * (3 - 2 * u), fx0 = e.from[0], fy0 = e.from[1], x = fx0 + (ax - fx0) * k, y = fy0 + (ay - fy0) * k - M.sin(M.PI * k) * 60, sz = 44 - 18 * k; g.font = sz + 'px serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.globalAlpha = 1; g.shadowColor = e.c; g.shadowBlur = 18; g.fillText(e.ico, x, y); g.shadowBlur = 0; for (let q = 1; q < 6; q++) { const kq = M.max(0, k - q * .05); g.globalAlpha = (1 - q / 6) * .6; g.fillStyle = e.c; g.beginPath(); g.arc(fx0 + (ax - fx0) * kq, fy0 + (ay - fy0) * kq - M.sin(M.PI * kq) * 60, 4 - q * .5, 0, TAU); g.fill() } }
+    else if (e.k === 'spark') { if (!e.p) e.p = Array.from({ length: e.n || 30 }, () => ({ a: R() * TAU, v: 50 + R() * (e.sp || 150), l: .5 + R() * .5, s: 1.5 + R() * 2.5 })); g.fillStyle = e.c; for (const q of e.p) { const k = t / q.l; if (k >= 1) continue; const d = q.v * t; g.globalAlpha = 1 - k; g.beginPath(); g.arc(ax + M.cos(q.a) * d, ay + M.sin(q.a) * d + 160 * t * t, q.s * (1 - k * .5), 0, TAU); g.fill() } }
+    else if (e.k === 'confetti') { if (!e.p) e.p = Array.from({ length: e.n || 60 }, (_, i) => ({ x: R() * W, y: -R() * H * .3, vx: (R() - .5) * 50, vy: 100 + R() * 160, r: R() * 6, vr: (R() - .5) * 9, c: e.cs[i % e.cs.length], s: 4 + R() * 5 })); for (const q of e.p) { q.x += q.vx * dt; q.y += q.vy * dt; q.r += q.vr * dt; g.save(); g.translate(q.x, q.y); g.rotate(q.r); g.fillStyle = q.c; g.globalAlpha = clamp(1 - u * .6, 0, 1); g.fillRect(-q.s / 2, -q.s / 4, q.s, q.s / 2); g.restore() } }
+    g.restore();
+  }
+  if (E.length) requestAnimationFrame(scLoop); else { scOn = false; sl = 0 }
+}
+/* chỉ số vừa tăng → số bay lên (lấy từ đúng số liệu thật trước/sau) */
+function gain(o) {
+  const f = fin(o), p = lastSt[o.id]; if (!p) return []; const L = [];
+  [['hp', '❤'], ['atk', '⚔'], ['def', '🛡'], ['spd', '👟']].forEach(([k, ic]) => { const d = f[k] - p[k]; if (d > 0) L.push([ic + ' +' + d, '#7dff9a']) });
+  const dc = f.crit - p.crit; if (dc > .0005) L.push(['💥 +' + M.round(dc * 100) + '%', '#7dff9a']); if (f.pw > p.pw) L.push(['LC +' + (f.pw - p.pw), '#ffe48f']); return L.slice(0, 4);
+}
+const nums = g => g.forEach(([txt, c], i) => fxAdd({ k: 'num', txt, c, d: i * .2, T: 1.5, dx: (i - (g.length - 1) / 2) * 62, dy: (i % 2) * 14 }));
+/* VFX + âm thanh cho từng loại tiến bộ; mọi mốc căn theo thời điểm BÙNG NỔ (hold) của chuỗi */
+function vfxFor(k, o2) {
+  const sd = seq.seed, h = seq.hold * seq.T * 1000, o = cur(), g = gain(o), col = (o2 && o2.col) || '#ffd978', sf = n => B.sfx && B.sfx(n), at = (ms, f) => setTimeout(() => { if (seq && seq.seed === sd) f() }, ms);
+  const sx = anc.x + (R() < .5 ? -1 : 1) * 150, sy = anc.y - 60;
+  if (k === 'lvl') { sf('p'); at(h, () => { sf('u'); fxAdd({ k: 'flash', c: '#fff2b0', a: .45, T: .6 }); fxAdd({ k: 'ring', c: '#ffd978', T: .9, r: .6 }); fxAdd({ k: 'spark', c: '#ffe48f', n: 34, T: 1.1 }); nums(g) }) }
+  else if (k === 'star') { sf('p'); at(h, () => { sf('win'); fxAdd({ k: 'flash', c: '#fff0a0', a: .5, T: .7 }); fxAdd({ k: 'ring', c: '#ffd34a', T: 1, r: .7 }); fxAdd({ k: 'spark', c: '#ffd34a', n: 40, T: 1.2 }); nums(g) }) }
+  else if (k === 'realm') { sf('b'); at(h * .85, () => fxAdd({ k: 'pillar', c: '#c79bff', w: 70, T: 1.8 }));
+    at(h, () => { sf('win'); shake(); fxAdd({ k: 'flash', c: '#ffffff', a: .95, T: .8 }); [0, .14, .28].forEach((d, i) => fxAdd({ k: 'ring', c: i ? '#c79bff' : '#fff', T: 1.3, d, r: 1.05, lw: 9 })); fxAdd({ k: 'spark', c: '#e6ccff', n: 70, T: 1.5, sp: 230 }); nums(g) }) }
+  else if (k === 'learn') { fxAdd({ k: 'fly', ico: (o2 && o2.ico) || '📖', c: col, from: [sx, sy], T: h / 1000 }); sf('p'); at(h * .55, () => sf('p'));
+    at(h, () => { sf('u'); fxAdd({ k: 'flash', c: col, a: .3, T: .5 }); fxAdd({ k: 'ring', c: col, T: 1, r: .7 }); fxAdd({ k: 'spark', c: col, n: 36, T: 1.2 }); fxAdd({ k: 'runes', c: col, T: 1.3 }); nums(g) }) }
+  else if (k === 'skillup') { fxAdd({ k: 'runes', c: col, T: h / 1000 + .6 }); sf('p');
+    at(h, () => { sf('u'); fxAdd({ k: 'pillar', c: col, w: 34, T: 1 }); fxAdd({ k: 'ring', c: col, T: .9, r: .55 }); fxAdd({ k: 'spark', c: col, n: 28, T: 1 }); nums(g) }) }
+  else if (k === 'eq') sf('p');
+}
+
+/* ================= THẺ NHẬN TRANG BỊ HIẾM (Hiếm / Sử Thi / Huyền Thoại) ================= */
+function gearCard(items) {
+  if ($('#hgr') || !items || !items.length) return; const G = B.gear; items = items.slice().sort((a, b) => b.r - a.r); const it = items[0], r = it.r, col = GC[r], s = sv(), sl_ = G.slot[it.s];
+  const cE = s.inv.find(i => i.u === s.eqp[it.s]), better = !cE || it.r > cE.r || (it.r === cE.r && it.l > cE.l), el = document.createElement('div'); el.id = 'hgr'; el.style.setProperty('--c', col);
+  const ico = `<img src="assets/it_${it.s}${it.r}.png" alt="" onerror="this.outerHTML='${sl_.i}'">`;
+  el.innerHTML = `<canvas></canvas><div class="cd"><div class="rb">${EQN[r].toUpperCase()}${r === 3 ? '!' : ''}</div><div class="ic">${ico}</div><h3>${it.n}</h3><p>${sl_.t} · Lv.${it.l}</p><p class="st">${sl_.f(G.val(it))}</p>${cE ? `<p style="font-size:11.5px;opacity:.75">Đang mặc: ${cE.n} (${sl_.f(G.val(cE))})</p>` : ''}${items.length > 1 ? `<div class="mr">+ ${items.length - 1} trang bị hiếm khác: ${items.slice(1, 5).map(i => G.slot[i.s].i + '<b style="color:' + GC[i.r] + '">' + EQN[i.r] + '</b>').join(' · ')}</div>` : ''}<div class="bb">${better ? '<button data-g="eq">MẶC NGAY</button>' : ''}<button class="cn" data-g="x">${better ? 'ĐỂ SAU' : 'TUYỆT!'}</button></div></div>`;
+  $('#menu').appendChild(el); const c = el.firstChild, g = c.getContext('2d'); let t0 = performance.now(), alive = true;
+  el.addEventListener('click', e => { const b = e.target.closest('[data-g]'); if (!b && e.target.closest('.cd')) return; if (b && b.dataset.g === 'eq') { s.eqp[it.s] = it.u; B.put(); B.sfx && B.sfx('u'); B.home() } alive = false; el.remove() });
+  const sf = n => B.sfx && B.sfx(n); sf(r === 3 ? 'win' : 'u'); if (r === 3) { sf('b'); setTimeout(() => sf('p'), 260) } else if (r === 2) setTimeout(() => sf('p'), 200);
+  anc.fy = M.max(anc.fy, 0); const ex = { k: 'flash', c: col, a: r === 3 ? .8 : r === 2 ? .5 : .3, T: .7 };
+  fxAdd(ex); if (r >= 2) { fxAdd({ k: 'ring', c: col, T: 1.2, r: .9 }); shake() } if (r === 3) { fxAdd({ k: 'ring', c: '#fff', T: 1.4, d: .15, r: 1.1 }); fxAdd({ k: 'confetti', cs: [col, '#fff', '#ffd34a'], n: 70, T: 3 }) }
+  const P = Array.from({ length: 12 + r * 10 }, () => ({ x: R(), y: R(), v: .05 + R() * .12, s: 1 + R() * 2.5, p: R() * 6 })), nr = 6 + r * 4;
+  (function loop(now) {
+    if (!alive) return; requestAnimationFrame(loop); const t = (now - t0) / 1000, dpr = M.min(2, devicePixelRatio || 1), W = el.clientWidth | 0, H = el.clientHeight | 0; if (!W) return;
+    if (c.width !== W * dpr) { c.width = W * dpr; c.height = H * dpr } g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
+    g.save(); g.translate(W / 2, H / 2); g.globalCompositeOperation = 'lighter'; for (let k = 0; k < nr; k++) { const a = k * TAU / nr + t * (r === 3 ? .4 : .22); g.globalAlpha = (k % 2 ? .1 : .22) * clamp(t * 1.5, 0, 1); g.fillStyle = col; g.beginPath(); g.moveTo(0, 0); g.arc(0, 0, M.max(W, H), a, a + (r === 3 ? .09 : .06)); g.closePath(); g.fill() } g.restore();
+    g.fillStyle = col; for (const q of P) { q.y -= q.v * .016; if (q.y < -.05) q.y = 1.05; g.globalAlpha = .75; g.beginPath(); g.arc((q.x + M.sin(t + q.p) * .02) * W, q.y * H, q.s, 0, TAU); g.fill() } g.globalAlpha = 1;
+  })(performance.now());
+}
 function bind(b) {
   if (B) return; B = b; const s = document.createElement('style'); s.textContent = STYLE; document.head.appendChild(s);
   hh = $('#hhero'); const stage = $('#hstage'), menu = $('#menu'); if (!hh || !stage || !menu) return;
@@ -306,12 +397,12 @@ function bind(b) {
   pn = document.createElement('div'); pn.id = 'hpn'; fx = document.createElement('div'); fx.id = 'hfx'; dim = document.createElement('div'); dim.id = 'hdim';
   skb = document.createElement('button'); skb.id = 'hskb'; skb.textContent = '👘'; skb.dataset.a = 'skinb'; skb.title = 'Diện mạo'; skb.setAttribute('aria-label', 'Diện mạo'); skb.style.display = 'none';
   sh = document.createElement('div'); sh.id = 'hsh'; sh.innerHTML = '<div class="bx"></div>';
-  stage.append(fx, pn, skb); const sc = $('#hscene'); if (sc) { menu.insertBefore(dim, sc.nextSibling); tint = document.createElement('div'); tint.className = 'ht'; sc.appendChild(tint) } else menu.appendChild(dim);
-  menu.appendChild(sh); say = $('#hsay');
+  stage.append(fx, pn, skb); const scn = $('#hscene'); if (scn) { menu.insertBefore(dim, scn.nextSibling); tint = document.createElement('div'); tint.className = 'ht'; scn.appendChild(tint) } else menu.appendChild(dim);
+  menu.appendChild(sh); sc = document.createElement('canvas'); sc.id = 'hfxs'; sg = sc.getContext('2d'); menu.appendChild(sc); say = $('#hsay');
   const click = e => { const t = e.target.closest('[data-a]'); if (t) act(t.dataset.a, t.dataset.v) };
   pn.addEventListener('click', click); sh.addEventListener('click', e => { if (e.target === sh) closeSheet(); else click(e) }); skb.addEventListener('click', click);
   hh.addEventListener('click', () => setTimeout(talk, 0));
   requestAnimationFrame(frame);
 }
-window.DV_SHOW = { bind, cur, play, unlock, thumbs, lines: LINES };
+window.DV_SHOW = { bind, cur, play, unlock, thumbs, gearCard, fxAdd, lines: LINES };
 })();

@@ -964,7 +964,7 @@ function homeSync(){if(!window.DV_HOME)return;const c=sv.map,m=MAPS[c],S=STG(c).
 $('#b-fight').onclick=()=>{const c=sv.map,S=STG(c).filter(x=>x.t!=='v'),nx=S.find(x=>!sv.cl[c+'-'+x.i]&&okS(c,x))||S.filter(x=>okS(c,x)).pop();const b=$('#b-fight');b.classList.add('go');setTimeout(()=>b.classList.remove('go'),400);if(nx)go(c+'-'+nx.i);else renderMap(c)};
 setInterval(()=>{document.querySelectorAll('[data-cd]').forEach(s=>s.textContent=cdf(+s.dataset.cd-Date.now()));if(!run&&$('#menu').classList.contains('on'))home()},1000);
 home();
-if(window.DV_SHOW)DV_SHOW.bind({sv:()=>sv,HEROES,HQ,hexp,cap:s=>PG.heroCap(s),hxUp,put,sfx,toast,home,pwr,bon,vh:{books:()=>VH,next:vhNext,learn:learnVH}});home();
+if(window.DV_SHOW)DV_SHOW.bind({sv:()=>sv,HEROES,HQ,hexp,cap:s=>PG.heroCap(s),hxUp,put,sfx,toast,home,pwr,bon,vh:{books:()=>VH,next:vhNext,learn:learnVH},gear:{slot:SLOT,val:pv}});home();
 
 const soon='<div class="panel" style="text-align:center;margin:0">Tính năng đang được phát triển.<br>Sẽ ra mắt ở bản cập nhật sau.</div>';
 const selHero=id=>{const h=HEROES.find(x=>x.id===id),x=sv.hx[id]||{l:1,e:0},un=!!sv.hu[id],pr=CH?CH.prog(id):{aw:0,asc:0},c=CH&&CH.get(id),q=HQ[h.q],o=sv.hs;let pw=0;sv.hs=id;try{pw=pwr()}finally{sv.hs=o}
