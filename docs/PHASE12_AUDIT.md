@@ -31,8 +31,8 @@ Phân tích dựa trên mã nguồn thực tế của bản `phase12-progress-vf
 | VII Sự kiện theo thứ trong tuần | ❌ (event hiện theo tháng/tuần, không theo thứ) |
 | VIII Season đầy đủ (nhiệm vụ mùa, boss mùa, lưu BXH cũ) | ⚠ chỉ có Battle Pass tháng |
 | IX Giang Hồ Kỳ Ngộ | ❌ |
-| X Môn Phái | ❌ |
-| XI Cảnh giới 10 bậc | ⚠ có Thức Tỉnh/Thăng Giai, chưa có 10 cảnh giới Phàm Nhân→Độ Kiếp |
+| X Môn Phái | ✅ **làm xong ở Phase 12-P6** (5 phái, Cống Hiến, Tuyệt Học; chưa có nhiệm vụ/boss riêng của phái) |
+| XI Cảnh giới 10 bậc | ✅ **làm xong ở Phase 12-P6** (theo từng tướng; Thức Tỉnh/Thăng Giai giữ làm "dạng hình") |
 | XIII Tổ đội 2 người + Combo | ❌ **không tồn tại trong code** (yêu cầu ghi "giữ" nhưng chưa từng có) → phải làm mới |
 | XIV Set trang bị / hiệu ứng đặc biệt | ❌ |
 | XV Phù Văn / Trận Pháp | ❌ |
@@ -47,7 +47,7 @@ Phân tích dựa trên mã nguồn thực tế của bản `phase12-progress-vf
 4. **Art "không placeholder"**: trang bị găng/giày vẫn dùng emoji (thiếu `it_n*`, `it_f*`); ảnh nền menu/boss cũ là ảnh tĩnh.
 
 ## D. Lộ trình (mỗi phần: làm → test → mới sang phần sau)
-P1 Vượt ải ✅ (xong Quét + Tinh Anh) · P2 Main Menu/tướng ✅ · P3 Nâng cấp tướng/trang bị/võ công (+ Set, Phù Văn) ✅ (chưa có Trận Pháp) · P4 Bí Cảnh/Thử Luyện/Boss · P5 Event ngày + Season · P6 Môn Phái + Cảnh giới · P7 Tổ đội + Combo · P8 PvP + BXH · P9 Nhiệm vụ/Thành tựu/Login · P10 VFX/UI/hiệu năng.
+P1 Vượt ải ✅ (xong Quét + Tinh Anh) · P2 Main Menu/tướng ✅ · P3 Nâng cấp tướng/trang bị/võ công (+ Set, Phù Văn) ✅ (chưa có Trận Pháp) · P4 Bí Cảnh/Thử Luyện/Boss ✅ · P5 Event ngày + Season · P6 Môn Phái + Cảnh giới ✅ · P7 Tổ đội + Combo · P8 PvP + BXH · P9 Nhiệm vụ/Thành tựu/Login · P10 VFX/UI/hiệu năng.
 
 ## E. Phase 12-P1 — đã triển khai
 - `data/modes.js` (`DV_DATA.modes`): luật Tinh Anh + Quét; `hard(stage)` tạo bản Tinh Anh của **mọi** 312 màn từ dữ liệu thường (không nhân đôi dữ liệu).

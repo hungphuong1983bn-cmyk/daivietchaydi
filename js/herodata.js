@@ -2,6 +2,7 @@
    Không lưu thêm dữ liệu: ghép (read-only) từ các nguồn đã có → một nguồn sự thật duy nhất.
      HEROES (tên, phẩm chất, chỉ số gốc)  ·  sv.hx[id] (level, exp, sao, skin)  ·  DV_CHAR (cảnh giới, kỹ năng, aura, animation, VFX)
    record(id) trả về đủ 19 trường: id, name, quality, level, exp, star, realm, atk, hp, def, spd, crit, martial, skill, equipment, skin, aura, animation, vfx.
+   Phase 12-P6: thêm trường phụ cg (Cảnh giới 10 bậc, KHÔNG nằm trong FIELDS).
    Phase 12-P3: trang bị (7 ô) và Võ học là của TỪNG TƯỚNG (sv.eqh[id], sv.vhx[id]); túi đồ dùng chung. */
 (function () {
   let B = null;
@@ -36,6 +37,7 @@
       level: H.l, exp: H.e, expNext: B.hexp(H.l), levelCap: B.cap(H.s || 0),
       star: H.s || 0,
       realm: { aw: p.aw, asc: p.asc, max: mx, name: mx ? 'Cực Hạn' : (p.aw || p.asc) ? `Thức Tỉnh ${p.aw} · Thăng Giai ${p.asc}` : 'Dạng gốc' },
+      cg: (() => { const X = window.DV_DATA && DV_DATA.sect, k = (s.cg && s.cg[id]) | 0; if (!X) return null; const r = X.realm(k); return { step: k, name: r.n, icon: r.i, max: k >= X.MAXR } })(),
       atk: st ? st.attack : h.am, hp: st ? st.hp : h.hp, def: st ? st.defense : 0, spd: st ? st.speed : h.sp, crit: st ? st.crit : h.cr,
       martial: B.martialOf ? B.martialOf(id) : B.martial(),                 // Võ học đã học của CHÍNH tướng này
       skill: c ? { passive: c.passive && c.passive.name, list: c.skills.map(x => x.name), ultimate: c.ultimate && c.ultimate.name, main: h.sk } : { main: h.sk, list: [], passive: null, ultimate: null },

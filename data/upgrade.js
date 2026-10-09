@@ -47,7 +47,8 @@ DV_DATA.upg = (() => {
   // ── Phù Văn
   const rune = {
     maxLv: 5, slotAt: [1, 10, 20],
-    cost: [{ g: 600, t: 2 }, { g: 1500, t: 5 }, { g: 3500, t: 10 }, { g: 8000, t: 20 }, { g: 16000, t: 40 }],   // chi phí để ĐẠT cấp 1…5
+    cost: [{ g: 600, t: 2 }, { g: 1500, t: 5 }, { g: 3500, t: 10 }, { g: 8000, t: 20 }, { g: 16000, t: 40 }],
+    stone: [3, 8, 18, 35, 70],   // Phù Văn Thạch 🔶 (rơi từ Bí Cảnh · Phù Văn Các, Boss thế giới) để ĐẠT cấp 1…5 thay cho 🪙+⚙   // chi phí để ĐẠT cấp 1…5
     types: [
       { k: 'cg', n: 'Công Văn', i: '🔴', e: 'am', v: [.02, .04, .06, .08, .10] },
       { k: 'hv', n: 'Hộ Văn', i: '🟢', e: 'hp', v: [15, 30, 50, 75, 110] },

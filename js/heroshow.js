@@ -147,14 +147,14 @@ function detect(o) {
 function panel(o) {
   const s = sv(), C = CH(), cap = B.cap(o.p.s), need = B.hexp(o.p.l), full = o.p.l >= cap, q = o.q;
   const kind = C && o.p.aw < 3 ? 'aw' : 'asc', rq = C && s.hu[o.id] ? C.req(o.id, kind) : null;
-  const k = [o.id, o.p.l, o.H.e, o.p.s, o.p.aw, o.p.asc, o.mx, s.gold, s.hon, s.mt, eqSig(), vhKeys(), o.si, pn.dataset.star].join(); if (k === key) return; key = k;
+  const k = [o.id, o.p.l, o.H.e, o.p.s, o.p.aw, o.p.asc, o.mx, s.gold, s.hon, s.mt, (s.cg || {})[o.id] | 0, eqSig(), vhKeys(), o.si, pn.dataset.star].join(); if (k === key) return; key = k;
   const f = fin(o), pv = lastSt[o.id] || f, up = n => f[n] > pv[n] ? 'up' : '';
   const stars = [1, 2, 3, 4, 5].map((n, i) => `<i class="${n <= o.p.s ? 'on' : ''}" style="--k:${i}">★</i>`).join('');
   const gp = SLOTS.map(([sl, ic]) => { const r = eqR(sl); return `<i class="${r >= 0 ? 'on' : ''}" title="${ic} ${r >= 0 ? EQN[r] : 'Trống'}" style="--c:${GC[r] || '#8aa0a8'};border-color:${r >= 0 ? GC[r] : ''};background:${r >= 0 ? GC[r] + '66' : ''}">.</i>` }).join('');
   const vn = B.vh.next(), bk = !C ? '' : rq && rq.done ? `<button class="bk off">CỰC HẠN</button>` : `<button class="bk ${rq && rq.ok ? '' : 'off'}" data-a="bk">ĐỘT PHÁ<small>${rq && rq.st && rq.st.name ? rq.st.name : ''}</small></button>`;
   pn.innerHTML = `<div class="r1"><b>${o.h.n}</b><span class="q" style="color:${q[1]};border-color:${q[1]}">${q[0]}</span></div>
 <div class="r2"><span class="sr ${pn.dataset.star ? 'fx' : ''}">${stars}</span><span>⚔ LC <b class="${up('pw')}" style="color:#fff3d0">${f.pw.toLocaleString('vi')}</b></span></div>
-<div class="r3"><span class="rl">Cảnh giới: <b>${realmName(o)}</b></span><span class="gp">${gp}</span></div>
+<div class="r3"><span class="rl">Cảnh giới: <b>${B.cg ? B.cg(o.id) + '</b> <small style="opacity:.7">· ' + realmName(o) + '</small><b>' : realmName(o)}</b></span><span class="gp">${gp}</span></div>
 <div class="xp"><i style="width:${full ? 100 : M.min(100, o.H.e / need * 100)}%"></i><b>Lv.${o.p.l}/${cap} · ${full ? 'EXP MAX' : o.H.e + '/' + need}</b></div>
 <div class="st"><span class="${up('hp')}">❤${f.hp}</span><span class="${up('atk')}">⚔${f.atk}</span><span class="${up('def')}">🛡${f.def}</span><span class="${up('crit')}">💥${M.round(f.crit * 100)}%</span><span class="${up('spd')}">👟${f.spd}</span></div>
 <div class="bt"><button data-a="lv" class="${full ? 'off' : ''}">${full ? 'TRẦN CẤP' : 'NÂNG CẤP'}<small>${full ? 'Tăng ★' : '→ Lv.' + (o.p.l + 1)}</small></button>${bk}<button class="vh ${vn ? '' : 'off'}" data-a="vh">VÕ HỌC<small>${vn ? '🪙' + vn.n.c : 'Đã đủ'}</small></button></div>`;

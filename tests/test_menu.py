@@ -46,7 +46,8 @@ with sync_playwright() as p:
     chk('Hiển thị 7 ô trang bị đang mặc', m['eq'] == 7)
     need = ['ev', 'hero', 'gear', 'skill', 'sect', 'rift', 'bxh', 'qst', 'map' if False else 'inv']
     chk('Đủ nút: sự kiện, tướng, trang bị, võ công, môn phái, bí cảnh, BXH, nhiệm vụ', all(x in m['btns'] for x in need), str(m['btns']))
-    pg.evaluate("document.querySelector('[data-m=sect]').click()"); chk('Nút Môn phái/Bí cảnh phản hồi (chưa có hệ thống → báo đang phát triển)', 'phát triển' in pg.evaluate("document.querySelector('#mb').innerText"))
+    pg.evaluate("document.querySelector('[data-m=sect]').click()"); chk('Nút Môn phái mở hub Môn phái · Cảnh giới (Phase 12-P6)', pg.evaluate("!!document.querySelector('#hsc')")); pg.evaluate("DV_SECT.close()")
+    pg.evaluate("document.querySelector('#modal').classList.remove('on')"); pg.evaluate("document.querySelector('[data-m=rift]').click()"); chk('Nút Bí cảnh mở hub Bí Cảnh · Thử Luyện · Boss (Phase 12-P4)', pg.evaluate("!!document.querySelector('#hrf')")); pg.evaluate("document.querySelector('#hrf [data-a=x]').click()")
     pg.evaluate("document.querySelector('#modal').classList.remove('on')")
     # Chấm đỏ
     pg.evaluate("()=>{const s=__dv.sv();s.gold=0;s.qd.c={};s.st.kills=0;s.evs={};s.fd='x';__dv.home()}")

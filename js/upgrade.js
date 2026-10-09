@@ -137,7 +137,7 @@
     for (const t of R.types) {
       const l = r.lv[t.k] | 0, mx = l >= R.maxLv, c = R.cost[l], eqd = r.eq.slice(0, ns).includes(t.k), free = r.eq.slice(0, ns).includes(null) || r.eq.slice(0, ns).some(x => !x), can = c && s.gold >= c.g && (s.mt || 0) >= c.t;
       h += `<div class="cd ${eqd ? 'hl' : ''}"><div class="rw"><div class="ic">${t.i}<small>${l ? 'Lv.' + l : ''}</small></div><div class="mid"><b>${t.n}</b> <small style="display:inline">${l}/${R.maxLv}</small><small>${l ? u.runeFmt(t.k, l) : 'Chưa học'}${mx ? '' : ' → <b class="ok">' + u.runeFmt(t.k, l + 1) + '</b>'}</small></div>
-        <div style="display:flex;flex-direction:column;gap:4px"><button class="bt sm ${mx || !can ? 'of' : ''}" data-a="rup" data-k="${t.k}">${mx ? 'MAX' : (l ? '⬆ ' : 'HỌC ') + '🪙' + fm(c.g) + ' ⚙' + c.t}</button>${l ? `<button class="bt sm gh ${!eqd && !free ? 'of' : ''}" data-a="${eqd ? 'runeoff' : 'rset'}" data-k="${t.k}">${eqd ? 'THÁO' : 'GẮN'}</button>` : ''}</div></div></div>`;
+        <div style="display:flex;flex-direction:column;gap:4px"><button class="bt sm ${mx || !can ? 'of' : ''}" data-a="rup" data-k="${t.k}">${mx ? 'MAX' : (l ? '⬆ ' : 'HỌC ') + '🪙' + fm(c.g) + ' ⚙' + c.t}</button>${!mx && R.stone && (s.rs | 0) > 0 ? `<button class="bt sm ${(s.rs | 0) >= R.stone[l] ? '' : 'of'}" data-a="rups" data-k="${t.k}" title="Dùng Phù Văn Thạch">🔶${R.stone[l]}</button>` : ''}${l ? `<button class="bt sm gh ${!eqd && !free ? 'of' : ''}" data-a="${eqd ? 'runeoff' : 'rset'}" data-k="${t.k}">${eqd ? 'THÁO' : 'GẮN'}</button>` : ''}</div></div></div>`;
     }
     return h;
   }
@@ -147,7 +147,7 @@
   function render() {
     if (!root) return; const id = cur(), h = B.hero(id), pb = $('.pb', root), top = pb ? pb.scrollTop : 0, s = B.sv();
     root.style.setProperty('--c', h.col || '#2f5aa8');
-    $('.rs', root).innerHTML = `<span>🪙 ${fm(s.gold)}</span><span>⚙ ${fm(s.mt || 0)}</span><span>🔮 ${fm(s.hon || 0)}</span><span>💎 ${fm(s.gem)}</span>`;
+    $('.rs', root).innerHTML = `<span>🪙 ${fm(s.gold)}</span><span>⚙ ${fm(s.mt || 0)}</span><span>🔮 ${fm(s.hon || 0)}</span><span>💎 ${fm(s.gem)}</span>${s.rs ? `<span>🔶 ${fm(s.rs)}</span>` : ''}`;
     const o = B.heroInfo(id);
     $('.nm', root).innerHTML = `<h2>${h.i} ${h.n}</h2><div class="tg"><i style="color:${h.qc};border-color:${h.qc}">${h.q}</i><i>${'★'.repeat(o.star) || '☆'} Lv.${o.l}/${o.cap}</i><i>⚔ LC ${fm(o.pw)}</i>${o.sel ? '<i>✔ Tướng chính</i>' : ''}</div>`;
     root.querySelectorAll('.tbs button').forEach(b => { b.classList.toggle('on', b.dataset.t === tab); const u = b.querySelector('u'); if (u) u.style.display = badge(b.dataset.t, id) ? '' : 'none' });
@@ -172,6 +172,7 @@
       case 'sell': selU = null; return r(() => B.sellItem(d.u));
       case 'learn': return r(() => B.learn(id, d.v));
       case 'rup': return r(() => B.runeUp(id, d.k));
+      case 'rups': return r(() => B.runeUpS(id, d.k));
       case 'rset': return r(() => B.runeSet(id, d.k));
       case 'runeoff': return r(() => B.runeOff(id, d.k));
       case 'rtake': return r(() => B.runeTake(id, +d.i));

@@ -97,3 +97,10 @@ Nhân vật Q版 (`js/chibi.js`: mặt riêng, trang bị đổi hình theo ph�
 
 ## Phase 12 · Part 3 — Nâng cấp Tướng / Trang bị / Võ học
 Trang bị (7 ô) và Võ học tách riêng **theo từng tướng**; thêm Set trang bị, Phù Văn, màn **NÂNG CẤP TƯỚNG** 4 tab (`js/upgrade.js`, dữ liệu `data/upgrade.js`). Save v4 tự migrate từ v3. Xem `docs/PHASE12_P3_UPGRADE.md`. Kiểm thử: `python3 tests/test_upgrade.py`.
+
+## Phase 12 · Part 4 — Bí Cảnh · Thử Luyện Sinh Tồn · Boss Thế Giới
+Nút **Bí cảnh** mở hub 3 tab (`js/realm.js`, dữ liệu `data/realm.js`): 7 Bí Cảnh × 10 tầng có luật tầng + Quét; Thử Luyện vô tận 4 cấp với bảng nâng cấp % ngẫu nhiên; Boss Thế Giới 3 giai đoạn, vùng nguy hiểm, 8 hạng + thưởng hạng; tiền tệ mới **Phù Văn Thạch** 🔶. Đồng thời sửa lỗi `startWB()` không vào chế độ Boss khi chạy thật. Xem `docs/PHASE12_P4_REALM.md`. Kiểm thử: `tests/test_realm.py`.
+
+## Phase 12 · Part 6 — Cảnh Giới (10 bậc) · Môn Phái
+Nút **Môn phái** mở hub 3 tab (`js/sect.js`, dữ liệu `data/sect.js`): **Cảnh Giới** theo từng tướng (Phàm Nhân → Độ Kiếp, đột phá tuần tự bằng 🪙/⚙/🔮, bonus chỉ số + hiệu ứng trong ván) và **Môn Phái** theo tài khoản (5 phái, Cống Hiến, cấp phái 1–10, 4 Tuyệt Học/phái, tướng hợp phái ×1.25, đổi phái 💎50). Save thêm `cg`, `sc` (vẫn v4, tự migrate). Xem `docs/PHASE12_P6_SECT_REALM.md`. Kiểm thử: `tests/test_sect.py`.
+

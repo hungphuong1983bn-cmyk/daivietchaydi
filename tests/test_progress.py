@@ -11,6 +11,7 @@ with sync_playwright() as p:
     errs=[]; pg.on('pageerror',lambda e:errs.append(str(e)))
     pg.goto(PAGE); pg.wait_for_timeout(500)
     pg.add_script_tag(content="window.__bot="+BOT)
+    pg.evaluate("()=>{if(window.DV_HOME)DV_HOME.loading=(c,n,h,cb)=>cb()}")  # bỏ màn Loading (bất đồng bộ) để bot chạy đồng bộ
     snap=lambda:pg.evaluate("()=>{const s=__dv.sv();return {gold:s.gold,gem:s.gem,mt:s.mt,hon:s.hon||0,inv:s.inv.length,un:s.un,cl:Object.keys(s.cl).length,sr:JSON.stringify(s.sr),stars:__dv.starsTot()}}")
     ok_s=lambda c,i:pg.evaluate(f"__dv.okS({c},{i})")
     chk('Màn 1-2 khoá khi chưa clear 1-1', not ok_s(0,2))
