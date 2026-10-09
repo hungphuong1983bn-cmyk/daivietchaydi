@@ -149,6 +149,7 @@
       if (c.tier >= 3) rad(Q() ? 14 : 6, a => P(P0.x, P0.y - 10, M.cos(a) * 180, M.sin(a) * 120 - 30, .6, col, 3.5, 'em', 0));
       S.cf = M.max(S.cf, c.tier >= 3 ? .6 : .3); S.ccol = col;
       if (window.DV_AUDIO) DV_AUDIO.combo(c.tier);
+      if (window.DV_VFX3) DV_VFX3.combo(P0.x, P0.y, c.tier, col);
     }
   }
 

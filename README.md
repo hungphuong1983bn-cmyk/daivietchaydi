@@ -108,3 +108,4 @@ Nút **Môn phái** mở hub 3 tab (`js/sect.js`, dữ liệu `data/sect.js`): *
 
 ## Phase 13 — Combat SFX/VFX · Camera zoom · Loading Screen
 `data/skillfx.js`, `js/audio.js`, `js/vfx2.js`, `js/camera.js`, `data/loadscreen.js`, `js/loading.js`. Xem `docs/PHASE13_COMBAT_LOADING.md`. Kiểm thử: `python3 tests/phase13_test.py OUT`.
+Phase 14 (đồ hoạ Skill kiếm hiệp): `js/vfx3.js` — xem `docs/PHASE14_SWORD_VFX.md`.
