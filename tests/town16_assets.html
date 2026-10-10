@@ -1,0 +1,16 @@
+<!doctype html><meta charset="utf-8"><title>Asset sheet · Cổ Trấn (Phase 16)</title>
+<body style="margin:0;background:#2f4a2a"><canvas id="c"></canvas>
+<script src="../js/town16_art.js"></script>
+<script>
+/* Bảng xem thử mọi asset của DV_TOWN_ART (mở trực tiếp bằng trình duyệt). ?k=2 để xem ở dpr 2 */
+const K=+(new URLSearchParams(location.search).get('k')||1),A=DV_TOWN_ART,L=A.list;
+const items=[];A.names.forEach(n=>{for(let v=0;v<L[n].n;v++)items.push([n,v])});
+const cv=document.getElementById('c'),W=1500;let x=10,y=10,rowH=0,pos=[];
+for(const [n,v] of items){const a=L[n];if(x+a.w>W-10){x=10;y+=rowH+24;rowH=0}pos.push([x,y,n,v]);x+=a.w+24;rowH=Math.max(rowH,a.h)}
+const H=y+rowH+20;cv.width=W*K;cv.height=H*K;cv.style.width=W+'px';cv.style.height=H+'px';
+const g=cv.getContext('2d');g.scale(K,K);
+const gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,'#44663a');gr.addColorStop(1,'#34532e');g.fillStyle=gr;g.fillRect(0,0,W,H);
+for(const [px,py,n,v] of pos){const a=L[n],c=A.bake(n,v,K);g.drawImage(c,px,py,a.w,a.h);g.fillStyle='rgba(255,255,255,.85)';g.font='11px sans-serif';g.fillText(n+' #'+v,px+2,py+a.h+11);
+ g.strokeStyle='rgba(255,0,0,.8)';g.beginPath();g.moveTo(px+a.ax-4,py+a.ay);g.lineTo(px+a.ax+4,py+a.ay);g.moveTo(px+a.ax,py+a.ay-4);g.lineTo(px+a.ax,py+a.ay+4);g.stroke()}
+window.__ready=true;
+</script>

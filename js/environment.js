@@ -40,8 +40,8 @@
   }
 
   /* ================= 3a) DANH SÁCH CHƯỚNG NGẠI ================= */
-  const OBK = ['rock', 'boulder', 'bush', 'oak', 'pine', 'willow', 'reed', 'mangrove', 'deadtree', 'palm', 'cactus', 'pillar', 'ruin', 'crystal', 'stalag', 'coral', 'lavarock', 'bones', 'tomb', 'spire', 'icecrys', 'cloudcol', 'voidrock', 'brazier', 'totem', 'banner'];
-  const OBR = [13, 17, 13, 11, 9, 10, 8, 12, 8, 8, 9, 11, 15, 11, 11, 11, 14, 10, 10, 11, 12, 12, 13, 0, 0, 0];   // bán kính va chạm (px)
+  const OBK = ['rock', 'boulder', 'bush', 'oak', 'pine', 'willow', 'reed', 'mangrove', 'deadtree', 'palm', 'cactus', 'pillar', 'ruin', 'crystal', 'stalag', 'coral', 'lavarock', 'bones', 'tomb', 'spire', 'icecrys', 'cloudcol', 'voidrock', 'brazier', 'totem', 'banner', 'tsolid', 'tpost'];   /* Phase 16: tsolid/tpost = ô va chạm vô hình của khu Cổ Trấn */
+  const OBR = [13, 17, 13, 11, 9, 10, 8, 12, 8, 8, 9, 11, 15, 11, 11, 11, 14, 10, 10, 11, 12, 12, 13, 0, 0, 0, 28, 12];   // bán kính va chạm (px)
   const KI = {}; OBK.forEach((k, i) => KI[k] = i + 1);
 
   /* ================= 2) NỀN: bake tile ================= */
@@ -119,7 +119,7 @@
     const th = E.T.ground, S = M.ceil(64 * dpr), k = S / 64, tiles = [];
     for (let v = 0; v < NV + NA; v++) {
       const acc = v >= NV, r = rng(E.seed + v * 977 + 13), c = mk(S, S), g = c.getContext('2d'); g.scale(k, k);
-      const P = { h: E.hue + (r() - .5) * th.hv, s: th.s + (r() - .5) * 8, l: th.l + (r() - .5) * 2 * th.lv, t: th };
+      const P = { h: E.hue + (r() - .5) * th.hv, s: th.s + (r() - .5) * 8, l: th.l + (r() - .5) * 2 * th.lv * .35, t: th }   /* Phase 15: giảm lệch sáng từng ô → hết hiệu ứng bàn cờ */;
       g.fillStyle = hsl(P.h, P.s, P.l); g.fillRect(0, 0, 64, 64);
       for (let i = 0; i < 10; i++) { g.fillStyle = r() < .5 ? 'rgba(255,255,255,.04)' : 'rgba(0,0,0,.06)'; g.fillRect(r() * 62, r() * 62, 2 + r() * 3, 2 + r() * 3) }
       (GD[th.deco] || GD.dust)(g, r, P, acc ? 2.2 : 1);
@@ -158,6 +158,7 @@
     voidrock(g, r, c) { ell(g, 48, 100, 18, 6, rgba(c[2], .22)); ell(g, 48, 92, 12, 4, rgba(c[2], .3)); poly(g, [[30, 78], [36, 62], [50, 56], [64, 64], [66, 78], [56, 88], [40, 88]], c[0]); poly(g, [[36, 62], [50, 56], [46, 74], [32, 76]], mix(c[0], '#ffffff', .14)); poly(g, [[46, 74], [50, 56], [64, 64], [66, 78], [54, 82]], shade(c[0], .62)); ln(g, [[40, 80], [48, 70], [58, 74]], rgba(c[2], .8), 1.4) },
     brazier(g, r, c) { sdw(g, 16); g.fillStyle = '#3a3030'; g.fillRect(44, 80, 8, 24); g.fillRect(38, 100, 20, 4); poly(g, [[32, 66], [64, 66], [58, 82], [38, 82]], '#4a4040'); ell(g, 48, 66, 16, 5, '#2a2020'); ell(g, 48, 66, 12, 3.5, '#ff8a2a'); ln(g, [[34, 72], [62, 72]], c[2], 1.4) },
     totem(g, r, c) { sdw(g, 16); g.fillStyle = shade(c[0], .85); g.fillRect(38, 24, 20, 80); g.fillStyle = shade(c[0], .62); g.fillRect(50, 24, 8, 80); g.fillStyle = c[0]; g.fillRect(34, 20, 28, 8); const ec = c[2]; ell(g, 43, 46, 4, 3, '#14100c'); ell(g, 53, 46, 4, 3, '#14100c'); ell(g, 43, 46, 2.2, 2.2, ec); ell(g, 53, 46, 2.2, 2.2, ec); g.fillStyle = '#14100c'; g.fillRect(43, 58, 10, 4); ln(g, [[40, 72], [56, 72]], rgba(ec, .8), 1.6); ln(g, [[40, 82], [56, 82]], rgba(ec, .6), 1.6); ln(g, [[40, 92], [56, 92]], rgba(ec, .4), 1.6) },
+    tsolid() { }, tpost() { },
     banner(g, r, c) { sdw(g, 12); g.fillStyle = '#4a3a2a'; g.fillRect(46, 18, 4, 86); ell(g, 48, 17, 4, 4, c[2]); poly(g, [[50, 24], [76, 28], [72, 44], [76, 62], [50, 58]], shade(c[1], 1.1)); poly(g, [[50, 24], [76, 28], [72, 44], [76, 62], [50, 58]], rgba(c[2], .35)); ln(g, [[56, 36], [68, 40]], c[2], 2); ln(g, [[56, 46], [68, 50]], c[2], 2) }
   };
   function bakeSpr(ki, v, c) {
@@ -173,6 +174,10 @@
   /* ================= 3c) CHƯỚNG NGẠI: truy vấn ================= */
   function ob(gx, gy) {
     if (!E) return 0;
+    if (E.town) {                                             // Phase 16: khu dựng tay — undefined = ngoài khu → sinh ngẫu nhiên như cũ
+      const q = E.town.ob(gx, gy);
+      if (q !== undefined) { const a0 = E.arena; if (q && a0) { const dx = gx * 64 + 32 - a0.x, dy = gy * 64 + 34 - a0.y, r0 = a0.R + 40; if (dx * dx + dy * dy < r0 * r0) return 0 } return q }
+    }
     const h = hs(gx * 7 + 3, gy * 5 + 1);
     if (h % E.obmod) return 0;
     if (gx >= -2 && gx <= 1 && gy >= -2 && gy <= 1) return 0;
@@ -194,6 +199,7 @@
       const kind = E.zw[(h >>> 10) % E.zw.length], rx = 84 + (h >>> 14) % 110, ry = rx * (.62 + ((h >>> 20) % 38) / 100);
       const x = ci * C + C * .18 + ((h >>> 3) % 100) / 100 * C * .64, y = cj * C + C * .18 + ((h >>> 9) % 100) / 100 * C * .64;
       if (M.hypot(x, y) < RU.zone.clearR + rx) continue;
+      if (E.town && E.town.near(x, y, rx)) continue;            // Phase 16: không có vùng bùn/nước ngẫu nhiên trong khu dựng tay
       b.push({ k: kind, x, y, rx, ry, s: h % 97 });
     }
     E.zc.set(key, b); return b;
@@ -228,9 +234,10 @@
   /* zone: tác động lên người chơi / quái */
   const SLOWZ = { mud: 1, water: 1, sand: 1, rift: 1, poison: 1 };
   function foe(x, y) {
-    if (!E || !E.slowZ || E.arena) return 1;
-    const z = zoneAt(x, y); if (!z) return 1;
-    const s = RU.zone[z].spd; return s ? 1 - (1 - s) * RU.zone.foeSlow : 1;
+    const tf = E && E.town && !E.arena ? E.town.foe(x, y) : 1;  // Phase 16
+    if (!E || !E.slowZ || E.arena) return tf;
+    const z = zoneAt(x, y); if (!z) return tf;
+    const s = RU.zone[z].spd; return tf * (s ? 1 - (1 - s) * RU.zone.foeSlow : 1);
   }
 
   /* ================= 5) THỜI TIẾT ================= */
@@ -357,6 +364,7 @@
     const L = (x, y, r, s) => { if (x < -r || y < -r || x > W + r || y > H + r) return; g.globalAlpha = s; g.drawImage(LS, (x - r) * sc, (y - r) * sc, 2 * r * sc, 2 * r * sc) };
     const lr = (T.lightR || 260) * (1 + .035 * M.sin(t * 7.3) + .02 * M.sin(t * 3.1));
     L(P.x - cx, P.y - cy - 12, lr, 1);
+    if (E.town) E.town.lights(L, cx, cy, W, H, t);            // Phase 16: đèn lồng khu Cổ Trấn
     for (const z of E.vl) if (z.k === 'lava' || z.k === 'holy' || z.k === 'rift') L(z.sx, z.sy, z.rx * 1.7, .85);
     if (E.arena) for (const p of E.arena.pl) if (p.k === KI.brazier) L(p.x - cx, p.y - cy - 70, 170, .9 * E.arena.fade);
     if (G.boss && !G.boss.dead) L(G.boss.x - cx, G.boss.y - cy - 20, 210, .7);
@@ -572,8 +580,12 @@
       zl, zw, zp: M.min(.9, zl.reduce((s, z) => s + z[1], 0) * 1.15), zc: new Map(), zs: {}, slowZ: zl.some(z => SLOWZ[z[0]]), vl: [],
       hz: [], fx: [], dc: [], cl: [], gu: null, hcd: 0, arena: null, wp: [], wq: -1, cm: 1, pm: 1, pf: 0, pz: 0, ztk: 0,
       leaf: (map && map.leaf) || '#f4a3b8',
-      fogc: E_FOG[tk] || '200,212,228'
+      fogc: E_FOG[tk] || '200,212,228', town: null
     };
+    {                                                         // Phase 16: khu dựng tay (data/environments.js phần tử thứ 10, hoặc ?debug&town=cotran để xem thử)
+      const tid = A[9] || (/[?&]debug/.test(location.search) && (location.search.match(/[?&]town=(\w+)/) || [])[1]) || null;
+      if (tid && window.DV_TOWN) E.town = DV_TOWN.create(tid, E, { rng, hs, mk, soft, KI, dpr: () => dpr, q: () => host.q(), G: () => host.G() });
+    }
     bakeTiles();
     for (const k of new Set(E.obi)) for (let v = 0; v < 3; v++) getSpr(k, v, false);
     for (const z of new Set(E.zl.map(z => z[0]))) E.zs[z] = bakeZone(z);
@@ -599,6 +611,7 @@
         }
       } else E.ztk = 0;
     }
+    if (E.town && !G.ending && !E.arena) E.pm = M.min(E.pm, E.town.update(dt, G));   // Phase 16: lội sông chậm, qua cầu gỗ thì không
   }
 
   /* --- vẽ --- */
@@ -634,21 +647,24 @@
         }
       }
     }
+    if (E.town) E.town.drawGround(ctx, cx, cy, W, H);          // Phase 16: sông, cầu, đường lát đá (dưới sàn đấu trường)
     drawArenaFloor(ctx, cx, cy);
   }
   const PR = [];
   function props(cx, cy, W, H, L) {
     const gx0 = M.floor(cx / 64) - 1, gx1 = M.floor((cx + W) / 64) + 1, gy0 = M.floor(cy / 64), gy1 = M.floor((cy + H) / 64) + 2, a = E.arena;
     for (let gx = gx0; gx <= gx1; gx++) for (let gy = gy0; gy <= gy1; gy++) {
-      const k = ob(gx, gy); if (!k) continue; const h = hs(gx * 7 + 3, gy * 5 + 1);
+      const k = ob(gx, gy); if (!k || k === KI.tsolid || k === KI.tpost) continue; const h = hs(gx * 7 + 3, gy * 5 + 1);
       let o = PR.pop(); if (!o) o = { ob: 1 };
       o.k = k; o.v = (h >>> 16) % 3; o.x = gx * 64 + 32; o.y = gy * 64 + 34; o.sc = 1; o.arena = 0; L.push(o);
     }
+    if (E.town) E.town.collect(cx, cy, W, H, L);
     if (a) for (const p of a.pl) { if (p.x - cx < -80 || p.x - cx > W + 80 || p.y - cy < -20 || p.y - cy > H + 130) continue; L.push(p) }
     E.props = L;
   }
   function recycle(L) { for (const o of L) if (o.ob === 1 && !o.arena && PR.length < 80) PR.push(o) }
   function drawProp(ctx, o, sx, sy) {
+    if (o.tw) return E.town.drawProp(ctx, o, sx, sy);        // Phase 16
     const s = o.sc || 1, t = E.t; let yy = sy;
     if (o.k === KI.voidrock) yy -= M.sin(t * 1.6 + o.x * .01) * 3 + 8;
     const spr = getSpr(o.k, o.v, !!o.arena);

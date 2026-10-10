@@ -7,6 +7,7 @@
      DV_DATA.envAreas   52 khu vực (theo thứ tự chương): mỗi khu có buổi trong ngày, thời tiết, địa hình, hazard, đấu trường riêng
 
    Mã rút gọn của envAreas (mỗi dòng): [tod, thờiTiết, cườngĐộ 0-3, vùngĐất[], hazard, chướngNgại[]|null, hueDịch, tênĐấuTrường, mô tả]
+     phần tử thứ 10 (tuỳ chọn) = id khu dựng tay trong DV_TOWN (js/town16.js), ví dụ 'cotran': bản đồ dựng tay có sông/cầu gỗ/thác/cổ trấn; bỏ phần tử này là về nền sinh ngẫu nhiên
      tod:     dawn · day · dusk · night
      weather: none petals rain storm snow blizzard sand ash ember fog spore motes spray
      zone:    mud water ice lava poison sand holy rift
@@ -136,7 +137,7 @@ DV_DATA.envAreas = [
   /* 21 Thăng Long   */ ['day',   'petals', 1, [],                 'beam',   ['pillar', 'ruin', 'bush'],    16, 'Điện Kính Thiên',    'Hoàng thành rồng bay'],
   /* 22 Hồ Gươm      */ ['night', 'fog',    1, ['water'],          'wave',   ['willow', 'reed', 'rock'],    18, 'Tháp Rùa',           'Hồ đêm sương huyền ảo'],
   /* 23 Tản Viên     */ ['dawn',  'fog',    1, ['ice'],            'icicle', ['spire', 'pine', 'boulder'],  14, 'Đỉnh Tản Viên',      'Núi thiêng biển mây'],
-  /* 24 Phong Châu   */ ['day',   'petals', 1, ['mud'],            null,     ['oak', 'bush', 'rock'],       18, 'Đền Hùng',           'Đất Tổ cây cổ thụ'],
+  /* 24 Phong Châu   */ ['day',   'petals', 1, ['mud'],            null,     ['oak', 'bush', 'rock'],       18, 'Đền Hùng',           'Đất Tổ cây cổ thụ', 'cotran'],   // Phase 16: khu mẫu Cổ Trấn · Cầu Gỗ · Thác Nước (js/town16.js)
   /* 25 Cổ Loa       */ ['dusk',  'ash',    1, [],                 'meteor', ['ruin', 'pillar', 'rock'],    18, 'Vòng Ốc Cổ Loa',     'Thành ốc hoàng hôn'],
   /* 26 Mê Linh      */ ['dusk',  'sand',   2, ['mud'],            'gust',   null,                          24, 'Đài Hai Bà',         'Cánh đồng cuồng phong'],
   /* 27 Hát Môn      */ ['dusk',  'storm',  2, ['water'],          'bolt',   null,                          22, 'Ngã Ba Hát Môn',     'Cửa sông bão chiều'],
@@ -191,6 +192,7 @@ DV_DATA.envValidate = function () {
     if (a[4] && !HZ.includes(a[4])) err.push(n + ': hazard lạ ' + a[4]);
     if (a[5]) for (const o of a[5]) if (!OB.includes(o)) err.push(n + ': chướng ngại lạ ' + o);
     if (!a[7] || !a[8]) err.push(n + ': thiếu tên đấu trường / mô tả');
+    if (a[9] && window.DV_TOWN && !DV_TOWN.ids().includes(a[9])) err.push(n + ': khu dựng tay lạ ' + a[9]);
   });
   return err;
 };
