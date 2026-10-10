@@ -210,6 +210,8 @@ html,body{overscroll-behavior:none;height:100dvh}#mb{-webkit-overflow-scrolling:
 <script src="data/loadscreen.js"></script>
 <script src="data/environments.js"></script>
 <script src="js/environment.js"></script>
+<script src="js/town16_art.js"></script>
+<script src="js/town16.js"></script>
 <script src="data/characters.js"></script>
 <script src="js/chibi.js"></script>
 <script src="js/monsterart.js"></script>
@@ -218,6 +220,7 @@ html,body{overscroll-behavior:none;height:100dvh}#mb{-webkit-overflow-scrolling:
 <script src="js/camera.js"></script>
 <script src="js/vfx2.js"></script>
 <script src="js/vfx3.js"></script>
+<script src="js/map15.js"></script>
 <script src="js/loading.js"></script>
 <script src="js/character.js"></script>
 <script src="js/home.js"></script>
@@ -529,7 +532,7 @@ function finish(){
  sv.gold+=gold;sv.gem+=gem;{const H=sv.hx[sv.hs]||(sv.hx[sv.hs]={l:1,e:0});H.e+=exp;hxUp(H)}
  sv.st.games++;if(w)sv.st.wins++;qc('kills',G.kills);qc('games',1);if(w)qc('wins',1);if(w&&!G.wb){if(!XM())qc('stages',1);if(G.stt==='e')qc('elites',1);if(G.stt==='t')qc('chest',1);if(G.stt==='b')qc('bosses',1);clr()}if(G.wb)qc('bosses',1);evc('col',G.gold);evc('dmg',G.dm|0);bpx(30+(G.kills/10|0));if(G.wb)wbEnd();sv.st.kills+=G.kills;sv.st.maxLv=M.max(sv.st.maxLv,G.p.lv);
  const dr=SX?SX.drops:[];if(SX)dr.forEach(it=>{if(sv.inv.length<60)sv.inv.push(it)});for(let n=SX?0:w?(G.stt==='t'||G.stt==='e'?4:3):(R()<.4?1:0);n>0;n--){const it=mk('wahbrnf'[R()*7|0],rollR(G.map*3+(w?4:0)+(G.stt==='e'?10:0)+(G.stt==='b'?15:0)));dr.push(it);if(sv.inv.length<60)sv.inv.push(it)}
- sfx(w?'win':'lose');if(!G.wb)sv.best=M.max(sv.best,G.t|0);if(!SX&&w&&(G.stt==='e'||G.stt==='b'))sv.mt=(sv.mt||0)+10*(1+G.map);put();
+ sfx(w?'win':'lose');if(window.DV_MAP15)try{DV_MAP15.end(G,w)}catch(e){}if(!G.wb)sv.best=M.max(sv.best,G.t|0);if(!SX&&w&&(G.stt==='e'||G.stt==='b'))sv.mt=(sv.mt||0)+10*(1+G.map);put();
  const et=$('#et');et.textContent=w?'CHIẾN THẮNG':'THẤT BẠI';et.style.color=w?'#ffd978':'#ff6a5a';
  $('#er').innerHTML=`<div class="row"><span>EXP</span><b>+${exp.toLocaleString('vi')}</b></div><div class="row"><span>🪙 Gold</span><b>+${gold.toLocaleString('vi')}</b></div><div class="row"><span>💎 Kim Cương</span><b>+${gem}</b></div><div class="row"><span>Hạ gục</span><b>${G.kills}</b></div><div class="row"><span>Sống sót</span><b>${fmt(G.t)}</b></div>${dr.length?`<div style="text-align:center;margin-top:8px;font-size:13px">PHẦN THƯỞNG VẬT PHẨM</div><div style="display:flex;gap:8px;justify-content:center;margin-top:6px">${dr.map(i=>`<div class="slot" style="border-color:${RAR[RC[i.r]][1]}">${iimg(i)}<small>${RAR[RC[i.r]][0]}</small></div>`).join('')}</div><div style="text-align:center;font-size:11px;opacity:.8;margin-top:4px">${dr.map(i=>i.n).join(' · ')}</div>`:''}`;
  if(G.wb){$('#et').textContent='HẾT GIỜ';$('#er').innerHTML+=`<div class="row"><span>⚔ Sát thương boss</span><b>${(G.wd|0).toLocaleString('vi')}</b></div>${wbRankHtml()}`}
@@ -599,7 +602,7 @@ function draw(){
   ctx.fillStyle=`rgba(255,160,40,${.18*(1-k)})`;ctx.fill()}
  if(VF)VF.ground(ctx,cx,cy,W,H);if(V2)V2.dim(ctx,W,H);
  const L=G.en.slice();L.push({hero:1,x:P.x,y:P.y});if(ENV)ENV.props(cx,cy,W,H,L);L.sort((a,b)=>a.y-b.y);
- for(const e of L){const x=e.x-cx,y=e.y-cy;if(e.ob?(x<-90||y<-10||x>W+90||y>H+130):(x<-70||y<-80||x>W+70||y>H+70))continue;if(e.ob)ENV.drawProp(ctx,e,x,y);else e.hero?hero(x,y):enemy(e,x,y)}if(ENV)ENV.recycle(L);
+ for(const e of L){const x=e.x-cx,y=e.y-cy;if(e.ob?(e.cw?(x<-e.cw||y<-10||x>W+e.cw||y>H+e.ch):(x<-90||y<-10||x>W+90||y>H+130)):(x<-70||y<-80||x>W+70||y>H+70))continue;if(e.ob)ENV.drawProp(ctx,e,x,y);else e.hero?hero(x,y):enemy(e,x,y)}if(ENV)ENV.recycle(L);
  if(G.sk.phi){const n=G.sk.phi+1+xm('phi').n;if(VF)VF.phi(ctx,P,cx,cy,n,G.orbit,!!G.evo.phi);else for(let i=0;i<n;i++){const a=G.orbit+i/n*6.283,x=P.x+M.cos(a)*62-cx,y=P.y+M.sin(a)*62-10-cy;
   ctx.save();ctx.translate(x,y);ctx.rotate(a+M.PI/2);ctx.fillStyle='#bfe3ff';ctx.beginPath();ctx.moveTo(0,-13);ctx.lineTo(4,6);ctx.lineTo(-4,6);ctx.fill();ctx.fillStyle='#e8b84a';ctx.fillRect(-5,6,10,3);ctx.restore()}}
  for(const p of G.pr){if(VF){VF.proj(ctx,p,cx,cy);continue}ctx.save();ctx.translate(p.x-cx,p.y-cy);ctx.rotate(p.a);
@@ -637,7 +640,7 @@ const stc=()=>ST&&ST.cost?ST.cost:ST&&ST.h&&window.DV_DATA&&DV_DATA.modes?DV_DAT
 function start(){if(ST&&ST.x==='rift'&&RM4()&&!rfLeft(ST.r)){toast('🌀 Hết lượt Bí Cảnh hôm nay');return}if(sta()<stc()){toast('⚡ Không đủ thể lực (cần '+stc()+')');return}if((window.DV_LOAD||window.DV_HOME)&&!start.k&&MAPS[sv.map]){start.k=1;const go=()=>{start.k=0;start0()};if(window.DV_LOAD)DV_LOAD.show(ST,go);else DV_HOME.loading(sv.map,MAPS[sv.map].n,MAPS[sv.map].h,go);return}start0()}
 function start0(){if(sta()<stc()){toast('⚡ Không đủ thể lực (cần '+stc()+')');return}sv.stm=1;sv.sa-=stc();if(ST&&ST.h)elUse(ST.c,ST.i,1);if(ST&&ST.x==='rift')rfUse(ST.r,1);put();
  ['menu','end','lv','modal','pause'].forEach(i=>$('#'+i).classList.remove('on'));
- rs();newGame();if(ST&&ST.wb){G.wb=1;G.wl=(RM4()?RM4().rules.wboss.tl:(EVC().find(e=>e.id==='wb')||{}).tl||90);G.t=BOSS_T}au();music(1);$('#hud').classList.add('on');last=performance.now();run=true;
+ rs();newGame();if(ST&&ST.wb){G.wb=1;G.wl=(RM4()?RM4().rules.wboss.tl:(EVC().find(e=>e.id==='wb')||{}).tl||90);G.t=BOSS_T}au();music(1);$('#hud').classList.add('on');if(window.DV_MAP15)try{DV_MAP15.begin(G,ST,Q())}catch(e){}last=performance.now();run=true;
 }
 function pauseGame(){if(!run||!G||G.paused||G.ending)return;G.paused=true;inp.on=0;inp.x=inp.y=inp.kx=inp.ky=0;music(0);$('#b-retreat').style.display=G.tr?'flex':'none';$('#pause').classList.add('on')}
 function resumeGame(){if(!$('#pause').classList.contains('on'))return;$('#pause').classList.remove('on');G.paused=false;last=performance.now();music(1)}
