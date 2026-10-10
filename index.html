@@ -221,6 +221,12 @@ html,body{overscroll-behavior:none;height:100dvh}#mb{-webkit-overflow-scrolling:
 <script src="js/vfx2.js"></script>
 <script src="js/vfx3.js"></script>
 <script src="js/map15.js"></script>
+<script src="js/xianxia17.js"></script>
+<script src="js/xianxia17_skill.js"></script>
+<script src="js/xianxia17_dmg.js"></script>
+<script src="js/xianxia17_boss.js"></script>
+<script src="js/xianxia17_loot.js"></script>
+<script src="js/xianxia17_hud.js"></script>
 <script src="js/loading.js"></script>
 <script src="js/character.js"></script>
 <script src="js/home.js"></script>
@@ -287,7 +293,7 @@ function lv(dt){const n=[0,14,32][Q()];if(LF.length!==n){LF.length=0;for(let i=0
  for(const l of LF){l.y+=dt*.05*(.5+l.z);l.x+=dt*.03*l.z+M.sin(G.t+l.p)*dt*.02;if(l.y>1.05){l.y=-.05;l.x=R()}if(l.x>1.05)l.x=-.05}}
 function hit(e,d,kx,ky){
  if(e.dead)return;let cr=0;if(d<9999){d*=G.am;if(R()<G.cr){d*=G.cm||2;cr=1}if(e.arm)d*=1-e.arm;if(e.shd>0)d*=1-e.shr;}e.hp-=d;if(d<9999){G.dm=(G.dm||0)+d;if(e.boss&&G.wb)G.wd=(G.wd||0)+d}e.fl=.1;if(AU&&d<9999)AU.hit({src:G.src,e,crit:cr,dmg:d,G,theme:G.ch&&G.ch.theme});else if(!AU)sfx('h',70);if(V2&&d<9999)V2.onHit(e,G.src,cr,d,G);if(MA&&d<9999)MA.onHit(e,G,cr,Q());if(VF&&d<9999)VF.onHit(e,G.src,cr,d);
- if(Q()||G.fl.length<24)G.fl.push({x:e.x+(R()-.5)*10,y:e.y-e.r*2,t:cr?1:.7,T:cr?1:.7,v:M.round(d)+(cr?'!':''),c:cr?'#ff8a1e':e.boss?'#ff7a7a':d>45?'#ffd34a':'#fff',s:cr?24:d>45?18:15});
+ if(Q()||G.fl.length<24)G.fl.push({k:cr?'c':G.src&&G.src!=='kiem'?'s':'n',u:G.src||0,b:e.boss?1:0,x:e.x+(R()-.5)*10,y:e.y-e.r*2,t:cr?1:.7,T:cr?1:.7,v:M.round(d)+(cr?'!':''),c:cr?'#ff8a1e':e.boss?'#ff7a7a':d>45?'#ffd34a':'#fff',s:cr?24:d>45?18:15});
  if(cr||e.boss){G.hs=M.max(G.hs||0,cr?.035:.02);if(Q()&&cr&&!VF)G.fx.push({k:'r',x:e.x,y:e.y,t:.25,T:.25,R:38})}
  if(kx!==undefined){const f=e.boss?.12:1;e.vx=kx*f;e.vy=ky*f}
  if(e.hp<=0){e.dead=1;G.kills++;if(!G.ending){if(e.el===1)G.elk++;if(e.gold)G.gk++}deathX(e,d);if(MA)MA.onDie(e,G,Q());if(VF)VF.kill(e,G.src,d);if(V2)V2.onKill(e,G.src,G);G.e=M.min(100,(G.e||0)+(e.boss?25:2.2));for(let i=0,n=[3,7,12][Q()]*(e.boss?3:1);i<n;i++){const a=R()*6.28,v=60+R()*90;pt(e.x,e.y-8,M.cos(a)*v,M.sin(a)*v,.4,e.boss?'#ff5a4a':'#c9a07a')}G.orb.push({x:e.x,y:e.y,v:e.exp*(e.boss?25:1)});
@@ -532,7 +538,7 @@ function finish(){
  sv.gold+=gold;sv.gem+=gem;{const H=sv.hx[sv.hs]||(sv.hx[sv.hs]={l:1,e:0});H.e+=exp;hxUp(H)}
  sv.st.games++;if(w)sv.st.wins++;qc('kills',G.kills);qc('games',1);if(w)qc('wins',1);if(w&&!G.wb){if(!XM())qc('stages',1);if(G.stt==='e')qc('elites',1);if(G.stt==='t')qc('chest',1);if(G.stt==='b')qc('bosses',1);clr()}if(G.wb)qc('bosses',1);evc('col',G.gold);evc('dmg',G.dm|0);bpx(30+(G.kills/10|0));if(G.wb)wbEnd();sv.st.kills+=G.kills;sv.st.maxLv=M.max(sv.st.maxLv,G.p.lv);
  const dr=SX?SX.drops:[];if(SX)dr.forEach(it=>{if(sv.inv.length<60)sv.inv.push(it)});for(let n=SX?0:w?(G.stt==='t'||G.stt==='e'?4:3):(R()<.4?1:0);n>0;n--){const it=mk('wahbrnf'[R()*7|0],rollR(G.map*3+(w?4:0)+(G.stt==='e'?10:0)+(G.stt==='b'?15:0)));dr.push(it);if(sv.inv.length<60)sv.inv.push(it)}
- sfx(w?'win':'lose');if(window.DV_MAP15)try{DV_MAP15.end(G,w)}catch(e){}if(!G.wb)sv.best=M.max(sv.best,G.t|0);if(!SX&&w&&(G.stt==='e'||G.stt==='b'))sv.mt=(sv.mt||0)+10*(1+G.map);put();
+ sfx(w?'win':'lose');if(window.DV_MAP15)try{DV_MAP15.end(G,w)}catch(e){}if(window.DV_XIAN17)try{DV_XIAN17.end()}catch(e){}if(window.DV_XIAN17B)try{DV_XIAN17B.end()}catch(e){}if(window.DV_XIAN17L)try{DV_XIAN17L.end()}catch(e){}if(window.DV_XIAN17H)try{DV_XIAN17H.end()}catch(e){}if(!G.wb)sv.best=M.max(sv.best,G.t|0);if(!SX&&w&&(G.stt==='e'||G.stt==='b'))sv.mt=(sv.mt||0)+10*(1+G.map);put();
  const et=$('#et');et.textContent=w?'CHIẾN THẮNG':'THẤT BẠI';et.style.color=w?'#ffd978':'#ff6a5a';
  $('#er').innerHTML=`<div class="row"><span>EXP</span><b>+${exp.toLocaleString('vi')}</b></div><div class="row"><span>🪙 Gold</span><b>+${gold.toLocaleString('vi')}</b></div><div class="row"><span>💎 Kim Cương</span><b>+${gem}</b></div><div class="row"><span>Hạ gục</span><b>${G.kills}</b></div><div class="row"><span>Sống sót</span><b>${fmt(G.t)}</b></div>${dr.length?`<div style="text-align:center;margin-top:8px;font-size:13px">PHẦN THƯỞNG VẬT PHẨM</div><div style="display:flex;gap:8px;justify-content:center;margin-top:6px">${dr.map(i=>`<div class="slot" style="border-color:${RAR[RC[i.r]][1]}">${iimg(i)}<small>${RAR[RC[i.r]][0]}</small></div>`).join('')}</div><div style="text-align:center;font-size:11px;opacity:.8;margin-top:4px">${dr.map(i=>i.n).join(' · ')}</div>`:''}`;
  if(G.wb){$('#et').textContent='HẾT GIỜ';$('#er').innerHTML+=`<div class="row"><span>⚔ Sát thương boss</span><b>${(G.wd|0).toLocaleString('vi')}</b></div>${wbRankHtml()}`}
@@ -617,7 +623,7 @@ function draw(){
  if(MA)MA.drawFx(ctx,G,cx,cy,Q());if(VF)VF.air(ctx,cx,cy,W,H);drawTel(cx,cy);if(ENV)ENV.drawFx(ctx,cx,cy,W,H);for(const p of G.ep){if(VF){VF.ep(ctx,p,cx,cy,G);continue}const x=p.x-cx,y=p.y-cy;ctx.fillStyle='rgba(255,60,60,.35)';ctx.beginPath();ctx.arc(x,y,11,0,7);ctx.fill();ctx.fillStyle='#ff6a5a';ctx.beginPath();ctx.arc(x,y,6,0,7);ctx.fill()}
  if(V2)V2.draw(ctx,cx,cy,G);for(const p of G.pt){ctx.globalAlpha=M.min(1,p.t*2.5);ctx.fillStyle=p.c;ctx.fillRect(p.x-cx-2,p.y-cy-2,4,4)}ctx.globalAlpha=1;
  ctx.font='bold 15px Georgia,serif';ctx.textAlign='center';ctx.lineWidth=3;ctx.strokeStyle='#000';
- for(const f of G.fl){ctx.font='bold '+((f.s||15)*(f.T&&f.t>f.T-.12?1.35:1)|0)+'px Georgia,serif';ctx.globalAlpha=M.min(1,f.t*3);ctx.fillStyle=f.c;ctx.strokeText(f.v,f.x-cx,f.y-cy);ctx.fillText(f.v,f.x-cx,f.y-cy)}ctx.globalAlpha=1;
+ if(window.DV_XIAN17D)DV_XIAN17D.frame();for(const f of G.fl){if(f.k&&window.DV_XIAN17D&&DV_XIAN17D.draw(ctx,f,f.x-cx,f.y-cy))continue;ctx.font='bold '+((f.s||15)*(f.T&&f.t>f.T-.12?1.35:1)|0)+'px Georgia,serif';ctx.globalAlpha=M.min(1,f.t*3);ctx.fillStyle=f.c;ctx.strokeText(f.v,f.x-cx,f.y-cy);ctx.fillText(f.v,f.x-cx,f.y-cy)}ctx.globalAlpha=1;
  ctx.restore();W=sW;H=sH;if(Zc!==1)ctx.setTransform(D,0,0,D,0,0);
 if(ENV)ENV.drawAfter(ctx,cx,cy,W,H);else if(Q()){ctx.fillStyle=LC[G.map]||'#fff';for(const l of LF){ctx.globalAlpha=.35+.4*l.z;ctx.fillRect(((l.x*W-cx*l.z*.15)%W+W)%W,l.y*H,2+3*l.z,2+2*l.z)}ctx.globalAlpha=1;
  const fg=ctx.createLinearGradient(0,H*.55,0,H);fg.addColorStop(0,'rgba(200,215,235,0)');fg.addColorStop(1,`rgba(200,215,235,${.1+.05*M.sin(G.t*.6)})`);ctx.fillStyle=fg;ctx.fillRect(0,H*.55,W,H*.45)}
@@ -640,7 +646,7 @@ const stc=()=>ST&&ST.cost?ST.cost:ST&&ST.h&&window.DV_DATA&&DV_DATA.modes?DV_DAT
 function start(){if(ST&&ST.x==='rift'&&RM4()&&!rfLeft(ST.r)){toast('🌀 Hết lượt Bí Cảnh hôm nay');return}if(sta()<stc()){toast('⚡ Không đủ thể lực (cần '+stc()+')');return}if((window.DV_LOAD||window.DV_HOME)&&!start.k&&MAPS[sv.map]){start.k=1;const go=()=>{start.k=0;start0()};if(window.DV_LOAD)DV_LOAD.show(ST,go);else DV_HOME.loading(sv.map,MAPS[sv.map].n,MAPS[sv.map].h,go);return}start0()}
 function start0(){if(sta()<stc()){toast('⚡ Không đủ thể lực (cần '+stc()+')');return}sv.stm=1;sv.sa-=stc();if(ST&&ST.h)elUse(ST.c,ST.i,1);if(ST&&ST.x==='rift')rfUse(ST.r,1);put();
  ['menu','end','lv','modal','pause'].forEach(i=>$('#'+i).classList.remove('on'));
- rs();newGame();if(ST&&ST.wb){G.wb=1;G.wl=(RM4()?RM4().rules.wboss.tl:(EVC().find(e=>e.id==='wb')||{}).tl||90);G.t=BOSS_T}au();music(1);$('#hud').classList.add('on');if(window.DV_MAP15)try{DV_MAP15.begin(G,ST,Q())}catch(e){}last=performance.now();run=true;
+ rs();newGame();if(ST&&ST.wb){G.wb=1;G.wl=(RM4()?RM4().rules.wboss.tl:(EVC().find(e=>e.id==='wb')||{}).tl||90);G.t=BOSS_T}au();music(1);$('#hud').classList.add('on');if(window.DV_MAP15)try{DV_MAP15.begin(G,ST,Q())}catch(e){}if(window.DV_XIAN17)try{DV_XIAN17.begin(G,ST,Q())}catch(e){}if(window.DV_XIAN17B)try{DV_XIAN17B.begin(G)}catch(e){}if(window.DV_XIAN17L)try{DV_XIAN17L.begin(G)}catch(e){}if(window.DV_XIAN17H)try{DV_XIAN17H.begin(G)}catch(e){}last=performance.now();run=true;
 }
 function pauseGame(){if(!run||!G||G.paused||G.ending)return;G.paused=true;inp.on=0;inp.x=inp.y=inp.kx=inp.ky=0;music(0);$('#b-retreat').style.display=G.tr?'flex':'none';$('#pause').classList.add('on')}
 function resumeGame(){if(!$('#pause').classList.contains('on'))return;$('#pause').classList.remove('on');G.paused=false;last=performance.now();music(1)}
