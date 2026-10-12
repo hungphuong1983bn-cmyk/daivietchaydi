@@ -18,7 +18,9 @@
   const H = (x, y) => R3.height(x, y), Q = () => F.S ? F.S.q : 1;
   const W = R3.wux = { step: 0, last: -9, castT: -9, G: null, geo: {}, sig: new Map(), ice: new Map(), shd: new Map(), grounds: 0, imp: 0, st: { t: 0, fz: [] } };
   const AM = (col, op, side) => F.addM(F.C(col), op, null, side);
-  const busy = () => F.list.length > [28, 55, 90][Q()];
+  const busy = () => F.list.length > [28, 55, 90][Q()];   // chỉ cho hiệu ứng TRANG TRÍ phụ
+  const skillBusy = () => F.list.length > 260;           // an toàn tuyệt đối; skill chính luôn được dựng
+
   const shake = v => { const G = W.G; if (G) G.shake = M.max(G.shake || 0, v) };
   const _q = new T.Quaternion(), _Y = new T.Vector3(0, 1, 0), _v = new T.Vector3();
 
@@ -133,14 +135,14 @@
     return g;
   }
   function afterimage(e) {
-    if (busy() && Q() < 2) return; const G = W.G, x = e.x, y = e.y, g = ghost('#b070ff', 1), d = e.d || 0, dur = .55;
+    if (skillBusy()) return; const G = W.G, x = e.x, y = e.y, g = ghost('#b070ff', 1), d = e.d || 0, dur = .55;
     g.position.set(x, H(x, y), y); g.rotation.y = (G && G.p && G.p.face < 0) ? -PI / 2 : PI / 2; g.visible = false; let t0 = -d;
     const cross = []; for (const sg of [-1, 1]) { const m = new T.Mesh(F.geos().cone, AM('#e6ccff', .9)); m.scale.set(2, 40, 2); m.rotation.z = sg * .9; m.position.y = 18; g.add(m); cross.push([m, .9]) }
     fx(g, dur + d, (u, t) => { const k = clamp((t - d) / dur, 0, 1); g.visible = t >= d; g.position.y = H(x, y) + k * 6; g.scale.setScalar(1 + k * .12); g.traverse(o => { if (o.material && o.userData.k0 == null) o.userData.k0 = o.material.opacity; if (o.material) o.material.opacity = o.userData.k0 * (1 - k) }); if (t >= d && !g.userData.s) { g.userData.s = 1; F.burst(x, y, 18, 8, 120, .5, '#d9b8ff', 90, 60); F.ring(x, y, 26, .3, '#b070ff') } });
   }
   /* ====================== KỸ NĂNG 4 · THIÊN HỎA ====================== */
   function fireGround(x, y, r, dur) {
-    const q = Q(); if (W.grounds >= [2, 4, 6][q]) return; W.grounds++; const g = new T.Group(), rn = rune('#ff7a30', 1, .85); g.add(rn); g.position.set(x, H(x, y), y);
+    const q = Q(); if (W.grounds >= [5, 8, 12][q]) return; W.grounds++; const g = new T.Group(), rn = rune('#ff7a30', 1, .85); g.add(rn); g.position.set(x, H(x, y), y);
     const fl = [], N = [5, 9, 14][q]; for (let i = 0; i < N; i++) { const m = new T.Mesh(F.geos().cone, AM(i % 3 ? '#ff6a1a' : '#ffd070', .8)); m.userData = { a: R() * TAU, rr: .25 + R() * .65, h: 16 + R() * 26, ph: R() * 6 }; g.add(m); fl.push(m) }
     fx(g, dur, (u, t) => { const k = clamp(M.min(t / .25, (dur - t) / .6), 0, 1); rn.scale.set(r, 1, r); rn.rotation.y = t * .6; rn.material.opacity = .85 * k;
       for (const m of fl) { const d = m.userData, f = .75 + .25 * M.sin(t * 11 + d.ph); m.position.set(M.cos(d.a) * r * d.rr, 0, M.sin(d.a) * r * d.rr); m.scale.set(5.5, d.h * f * k, 5.5); m.material.opacity = .8 * k }
@@ -150,7 +152,7 @@
     const L = G.skx; if (!L) return;
     for (const o of L) {
       if (o.k !== 'met') continue; let s = W.sig.get(o);
-      if (!s) { if (busy() && Q() < 2) continue; const rn = rune('#ff5a2a', 1, .0), rn2 = rune('#ffc070', 1, 0); rn.position.y = rn2.position.y = 2; F.put(rn); F.put(rn2); s = { rn, rn2, done: 0 }; W.sig.set(o, s) }
+      if (!s) { if (skillBusy()) continue; const rn = rune('#ff5a2a', 1, .0), rn2 = rune('#ffc070', 1, 0); rn.position.y = rn2.position.y = 2; F.put(rn); F.put(rn2); s = { rn, rn2, done: 0 }; W.sig.set(o, s) }
       const k = clamp((o.t + .3) / .45, 0, 1), left = clamp((o.T - o.t) / .35, 0, 1), fade = M.min(k, left), x = o.x, y = o.y, r = o.r * 1.25;
       s.rn.position.set(x, H(x, y) + 2, y); s.rn2.position.set(x, H(x, y) + 2.6, y); s.rn.scale.set(r, 1, r); s.rn2.scale.set(r * .62, 1, r * .62); s.rn.rotation.y = o.t * 1.4; s.rn2.rotation.y = -o.t * 2; s.rn.material.opacity = .9 * fade; s.rn2.material.opacity = .8 * fade;
       if (o.t >= o.T && !s.done) { s.done = 1; fireGround(x, y, o.r * 1.1, 2.4); shake(.22); F.pillar(x, y, 240, o.r * .38, '#ff7a2a', .6, .7); F.ring(x, y, o.r * 2.2, .7, '#ff5a2a', 1, .08); if (Q()) F.burst(x, y, 10, 20, o.r * 3, 1.1, '#ff6a1a', 260, 120) }
@@ -163,7 +165,7 @@
     for (const o of L) {
       if (o.k !== 'zone' || o.st !== 'ice' || o.col) continue; let d = W.ice.get(o);
       if (!d) {
-        if (busy() && q < 2) continue; const grp = new T.Group(), g = F.geos(), N = [8, 12, 16][q], seg = []; F.put(grp);
+        if (skillBusy()) continue; const grp = new T.Group(), g = F.geos(), N = [8, 12, 16][q], seg = []; F.put(grp);
         for (let i = 0; i < N; i++) { const m = new T.Mesh(g.sph, AM(i % 2 ? '#bff4ff' : '#4ac8ff', .8)); grp.add(m); seg.push(m) }
         const head = new T.Group(), hm = new T.Mesh(g.cone, AM('#e8fbff', .95)); hm.scale.set(6, 16, 6); hm.rotation.x = PI / 2; head.add(hm);
         for (const sd of [-1, 1]) { const h = new T.Mesh(g.cone, AM('#9fe6ff', .9)); h.scale.set(2, 14, 2); h.position.set(sd * 4, 6, -4); h.rotation.set(-.6, 0, -sd * .6); head.add(h) } head.add(R3.glowSprite(0x6ad8ff, 70, .7)); grp.add(head);
@@ -185,7 +187,7 @@
     const L = G.skx; if (!L) return; const q = Q();
     for (const o of L) {
       if (o.k !== 'twr') continue; let s = W.shd.get(o);
-      if (!s) { if (busy() && q < 2) continue; const grp = new T.Group(), N = [2, 3, 4][q], cl = []; F.put(grp); for (let i = 0; i < N; i++) { const gh = ghost('#8a3aff', 1); grp.add(gh); cl.push({ gh, ph: i / N * TAU, sl: R() * .3 }) } s = { grp, cl }; W.shd.set(o, s); F.ring(o.x, o.y, o.r * 1.4, .5, '#8a3aff') }
+      if (!s) { if (skillBusy()) continue; const grp = new T.Group(), N = [2, 3, 4][q], cl = []; F.put(grp); for (let i = 0; i < N; i++) { const gh = ghost('#8a3aff', 1); grp.add(gh); cl.push({ gh, ph: i / N * TAU, sl: R() * .3 }) } s = { grp, cl }; W.shd.set(o, s); F.ring(o.x, o.y, o.r * 1.4, .5, '#8a3aff') }
       const t = o.t, fade = clamp(M.min(t / .3, (o.T - t) / .4), 0, 1);
       for (const c of s.cl) {
         const th = t * 5.2 + c.ph, rr = o.r * .9, x = o.x + M.cos(th) * rr, y = o.y + M.sin(th) * rr; c.gh.position.set(o.x + M.cos(th) * rr - o.x, H(x, y) - H(o.x, o.y) + M.abs(M.sin(t * 9 + c.ph)) * 4, M.sin(th) * rr); c.gh.rotation.y = -th; c.gh.scale.setScalar(1.15 * fade + .001);
