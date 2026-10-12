@@ -229,7 +229,7 @@
       F.S = S; geos(); initParticles(S);
       const V = window.DV_VFX; if (V && !V.__r3) {
         V.__r3 = 1; const w = (n, f) => { const o = V[n]; if (typeof o !== 'function') return; V[n] = function () { if (R3.active()) { try { f.apply(null, arguments) } catch (e) { console.warn('[r3d fx]', n, e) } } return o.apply(this, arguments) } };
-        w('palm', palm); w('bolt', bolt); w('boom', boom); w('ult', ult); w('heal', heal); w('zoneHit', zoneHit); w('bossDie', bossDie); w('cast', (k, x, y, a, ev) => { if (k === 'kiem') slash(x, y, a, ev) }); w('onHit', (e, src, cr) => hitFx(e, src, cr));
+        w('palm', palm); w('bolt', bolt); w('boom', boom); w('ult', ult); w('heal', heal); w('zoneHit', zoneHit); w('bossDie', bossDie); w('cast', (k, x, y, a, ev) => { if (k === 'kiem' && !R3.wux) slash(x, y, a, ev) })   /* Phase 21: có r3d_wuxia.js thì dùng chuỗi Combo mới */; w('onHit', (e, src, cr) => hitFx(e, src, cr));
       }
     },
     begin(S, G) { F.S = S; reset(S) },

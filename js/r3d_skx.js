@@ -126,6 +126,7 @@
   /* ---------- sự kiện một lần ---------- */
   function onEvent(e) {
     const x = e.x, y = e.y, r = e.r || 60;
+    if (R3.wux && R3.wux.onSkxe) { try { R3.wux.onSkxe(e) } catch (er) { console.warn('[wux ev]', er) } }   // Phase 21: lớp hiệu ứng bổ sung (không thay thế)
     switch (e.e) {
       case 'ice': F.ring(x, y, r, .55, e.col || '#9fe6ff'); F.ring(x, y, r * .6, .45, '#ffffff', 1, .08); F.flashDome(x, y, r * .8, .4, e.col || '#bff0ff', .45); F.burst(x, y, 8, 22, r * 1.4, .7, e.col || '#e6fbff', 120); R3.flash(x, y, 0x9fe6ff, 4); break;
       case 'fireboom': F.boom(x, y, r); F.ring(x, y, r * .6, .5, '#ffe27a', 1, .05); F.burst(x, y, 12, 14, r * 1.6, .8, '#ffd070', 200, 120); break;
