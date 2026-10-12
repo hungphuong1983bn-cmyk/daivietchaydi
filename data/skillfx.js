@@ -13,6 +13,14 @@ DV_DATA.skillfx = {
 
   /* ===== Võ công thường ===== */
   skills: {
+    hoa: { skillId: 'hoa', skillName: 'Phượng Hoàng Hỏa', element: 'hoa', weapon: 'fire', castSFX: 'hoa.whoosh', chargeSFX: null, travelSFX: null, hitSFX: 'hoa.hit', impactSFX: 'hoa.explode', criticalSFX: 'crit.hoa', ultimateSFX: null, vfx: 'hoa', cameraEffect: { wide: 0, shake: .1, punch: 0 } },
+    bang: { skillId: 'bang', skillName: 'Hàn Băng Trận', element: 'bang', weapon: 'ice', castSFX: 'bang.freeze', chargeSFX: null, travelSFX: null, hitSFX: 'bang.crack', impactSFX: 'bang.shatter', criticalSFX: 'crit.bang', ultimateSFX: null, vfx: 'bang', cameraEffect: { wide: 0, shake: 0, punch: 0 } },
+    doc: { skillId: 'doc', skillName: 'Vạn Độc Vân', element: 'doc', weapon: 'poison', castSFX: 'doc.energy', chargeSFX: null, travelSFX: null, hitSFX: 'doc.burst', impactSFX: 'doc.toxic', criticalSFX: 'crit.doc', ultimateSFX: null, vfx: 'doc', cameraEffect: { wide: 0, shake: 0, punch: 0 } },
+    phong: { skillId: 'phong', skillName: 'Toàn Phong Trảm', element: 'phong', weapon: 'wind', castSFX: 'phong.whoosh', chargeSFX: null, travelSFX: null, hitSFX: 'phong.slash', impactSFX: 'phong.burst', criticalSFX: 'crit.phong', ultimateSFX: null, vfx: 'phong', cameraEffect: { wide: 0, shake: 0, punch: 0 } },
+    tinh: { skillId: 'tinh', skillName: 'Tinh Thần Vẫn Lạc', element: 'hoa', weapon: 'meteor', castSFX: 'hoa.whoosh', chargeSFX: null, travelSFX: null, hitSFX: 'hoa.hit', impactSFX: 'hoa.explode', criticalSFX: 'crit.hoa', ultimateSFX: null, vfx: 'hoa', cameraEffect: { wide: 220, shake: .25, punch: 0 } },
+    tru: { skillId: 'tru', skillName: 'Tru Tiên Kiếm', element: 'kiem', weapon: 'sword', castSFX: 'kiem.cast2', chargeSFX: null, travelSFX: null, hitSFX: 'kiem.hit', impactSFX: 'kiem.impact2', criticalSFX: 'crit.kiem', ultimateSFX: null, vfx: 'kiem', cameraEffect: { wide: 160, shake: .3, punch: .05 } },
+    lien: { skillId: 'lien', skillName: 'Liên Hoa Kiếm Trận', element: 'kiem', weapon: 'sword', castSFX: 'kiem.cast', chargeSFX: null, travelSFX: 'kiem.travel', hitSFX: 'kiem.hit', impactSFX: 'kiem.impact', criticalSFX: 'crit.kiem', ultimateSFX: null, vfx: 'kiem', cameraEffect: { wide: 120, shake: .06, punch: 0 } },
+    kim: { skillId: 'kim', skillName: 'Kim Chung Tráo', element: 'chuong', weapon: 'palm', castSFX: 'chuong.cast', chargeSFX: null, travelSFX: null, hitSFX: 'quyen.hit', impactSFX: 'quyen.shock', criticalSFX: 'crit.chuong', ultimateSFX: null, vfx: 'hang', cameraEffect: { wide: 0, shake: .2, punch: 0 } },
     kiem: { skillId: 'kiem', skillName: 'Kiếm Khí', element: 'kiem', weapon: 'sword',
       castSFX: 'kiem.cast', chargeSFX: null, travelSFX: 'kiem.travel', hitSFX: 'kiem.hit', impactSFX: 'kiem.impact', criticalSFX: 'crit.kiem', ultimateSFX: null,
       vfx: 'kiem', cameraEffect: { wide: 0, shake: 0, punch: 0 },
