@@ -47,5 +47,5 @@
     ctx.restore(); S.stats[crit ? 'c' : skill ? 's' : 'n']++; return true;
   }
   if (window.DV_ENV && DV_ENV.drawAfter) { const oA = DV_ENV.drawAfter; DV_ENV.drawAfter = function (ctx) { oA.apply(this, arguments); try { flush(ctx) } catch (e) { QUE.length = 0 } }; S.hooked = true }
-  window.DV_XIAN17D = { ok: () => true, enabled: true, stats: S.stats, draw, frame() { S.glow = 0; QUE.length = 0 } };
+  window.DV_XIAN17D = { ok: () => true, enabled: true, stats: S.stats, draw, flush, frame() { S.glow = 0; QUE.length = 0 } };
 })();
