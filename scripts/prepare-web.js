@@ -14,6 +14,7 @@ const INCLUDE = [
   'data',
   'icons',
   'js',
+  'vendor',
 ];
 
 fs.rmSync(out, { recursive: true, force: true });
