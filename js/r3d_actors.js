@@ -99,6 +99,7 @@
     rig.aura = runeDecal('#ffd978', 30, .55); rig.aura.position.y = 1.5; g.add(rig.aura);
     rig.glow = glowSprite(0xffd27a, 90, .22); rig.glow.position.y = 26; g.add(rig.glow);
     rig.orbs = []; for (let i = 0; i < 5; i++) { const s = glowSprite(0xffe9a8, 7, .85); g.add(s); rig.orbs.push(s) }
+    if (R3.chibiHero) { try { R3.chibiHero(rig) } catch (e) { console.warn('[chibi]', e) } }   // Phase 22: tạo hình chibi (lỗi → giữ bản cũ)
     g.traverse(o => { if (o.isMesh && !o.material.isMeshBasicMaterial) o.castShadow = true });
     return rig;
   }
@@ -107,7 +108,7 @@
     const hr = S.host.HR ? S.host.HR() : { id: 'dbl', col: '#2f5aa8' }, key = hr.id + hr.col;
     if (A.hero && A.heroKey === key) return A.hero;
     if (A.hero) { S.world.remove(A.hero.g); disposeGroup(A.hero.g) }
-    A.hero = buildHero(hr.id, hr.col); A.heroKey = key; S.world.add(A.hero.g); return A.hero;
+    A.hero = buildHero(hr.id, hr.col); A.hero.g.scale.setScalar(1.3); A.heroKey = key; S.world.add(A.hero.g); return A.hero;
   }
   function disposeGroup(g) { g.traverse(o => { if (o.geometry && !o.geometry.userData.keep && !isPrim(o.geometry)) o.geometry.dispose(); if (o.material && o.material.dispose && !o.material.userData.keep) o.material.dispose() }) }
   function isPrim(geo) { for (const k in P_) if (P_[k] === geo) return true; return false }
@@ -136,6 +137,7 @@
     r.armR.rotation.x = pz.armR; r.armL.rotation.x = pz.armL; r.armR.rotation.z = -.12; r.armL.rotation.z = .12; r.wp.rotation.x = pz.wpx;
     if (r.cape) r.cape.rotation.x = .15 + (mv ? .5 : .08) + M.sin(t * 6) * .05;
     if (r.hair) r.hair.rotation.x = PI - (mv ? .6 : .1) + M.sin(t * 5) * .06;
+    if (r.face) R3.chibiFace(r, end ? (G.win ? 'smile' : 'hurt') : P.inv > 0 ? 'hurt' : (atk >= 0 || ult || P.skc > 0) ? 'angry' : 'idle');
     // hoạt ảnh trúng đòn: nhấp nháy
     const fl = P.inv > 0 && ((t * 20) | 0) % 2; for (const m of r.mats) if (m.emissive) m.emissive.setScalar(fl ? .55 : 0);
     // hào quang

@@ -17,7 +17,7 @@
   const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
   const H = (x, y) => R3.height(x, y), Q = () => F.S ? F.S.q : 1;
   const W = R3.wux = { step: 0, last: -9, castT: -9, G: null, geo: {}, sig: new Map(), ice: new Map(), shd: new Map(), grounds: 0, imp: 0, st: { t: 0, fz: [] } };
-  const AM = (col, op, side) => F.addM(F.C(col), op, null, side);
+  const AM = (col, op, side) => F.addM(F.C(col), op * .8, null, side);   // Phase 22: -20% độ đục để không che nhân vật/quái
   const busy = () => F.list.length > [28, 55, 90][Q()];   // chỉ cho hiệu ứng TRANG TRÍ phụ
   const skillBusy = () => F.list.length > 260;           // an toàn tuyệt đối; skill chính luôn được dựng
 
@@ -51,7 +51,7 @@
     if (s === 0) {   // 1. chém ngang: vệt kiếm cong theo quỹ đạo vũ khí
       const L = [[new T.Mesh(sector(.86, 2.2), AM(c1, .95, T.DoubleSide)), .95], [new T.Mesh(sector(.45, 2.0), AM(c1, .35, T.DoubleSide)), .35], [new T.Mesh(sector(.95, 2.4), AM(c2, 1, T.DoubleSide)), 1]];
       for (const [m] of L) { m.rotation.z = .22; m.renderOrder = 6; g.add(m) }
-      fx(g, .26, (u) => { const e = F.ease(u), r = 34 + 26 * e; L.forEach(([m], i) => { m.scale.set(r * (1 - i * .05), 1, r * (1 - i * .05)); m.rotation.y = -1.1 + 2.2 * F.ease3(u) + i * .08 }); setOp(L, 1 - u * u); if (q && u < .7) { const aa = a + (-1.1 + 2.2 * F.ease3(u)) * -1; F.burst(x + M.cos(aa) * r, y + M.sin(aa) * r, 26, 1, 40, .3, c2, 20, 0) } });
+      fx(g, .26, (u) => { const e = F.ease(u), r = 30 + 20 * e; L.forEach(([m], i) => { m.scale.set(r * (1 - i * .05), 1, r * (1 - i * .05)); m.rotation.y = -1.1 + 2.2 * F.ease3(u) + i * .08 }); setOp(L, 1 - u * u); if (q && u < .7) { const aa = a + (-1.1 + 2.2 * F.ease3(u)) * -1; F.burst(x + M.cos(aa) * r, y + M.sin(aa) * r, 26, 1, 40, .3, c2, 20, 0) } });
     } else if (s === 1) {   // 2. chém dọc: cung đứng + đường kiếm sáng + tia sáng + bụi
       const arc = new T.Mesh(vsector(1.9), AM(c1, .95, T.DoubleSide)), arc2 = new T.Mesh(vsector(1.6), AM(c2, 1, T.DoubleSide)); arc.renderOrder = arc2.renderOrder = 6; g.add(arc, arc2);
       const bl = new T.Mesh(F.geos().cylS, AM(c2, 1)); bl.scale.set(1.8, 74, 1.8); bl.position.set(0, -4, 44); g.add(bl);
@@ -60,7 +60,7 @@
     } else if (s === 2) {   // 3. chém xoay: vòng kiếm khí 360° quanh nhân vật
       const L = [[new T.Mesh(sector(.84, TAU * .92), AM(c1, .9, T.DoubleSide)), .9], [new T.Mesh(sector(.6, TAU * .7), AM(c2, .55, T.DoubleSide)), .55]]; for (const [m] of L) { m.renderOrder = 6; g.add(m) }
       F.ring(x, y, 70, .4, c1); if (q) F.burst(x, y, 20, 12, 150, .4, c2, 60, 120);
-      fx(g, .38, (u) => { const r = 24 + 52 * F.ease(u); L.forEach(([m], i) => { m.scale.set(r * (1 - i * .18), 1, r * (1 - i * .18)); m.rotation.y = (i ? -1 : 1) * u * TAU * 1.25 }); setOp(L, 1 - u * u * u) });
+      fx(g, .38, (u) => { const r = 22 + 38 * F.ease(u); L.forEach(([m], i) => { m.scale.set(r * (1 - i * .18), 1, r * (1 - i * .18)); m.rotation.y = (i ? -1 : 1) * u * TAU * 1.25 }); setOp(L, 1 - u * u * u) });
     } else {   // 4. lao tới: vệt chuyển động + mũi kiếm đâm
       const st = [], N = q ? 7 : 4;
       for (let i = 0; i < N; i++) { const m = new T.Mesh(F.geos().cone, AM(i % 2 ? c2 : c1, .8)); const lat = (i - (N - 1) / 2) * 5.2; m.userData = { lat, L: 46 + R() * 30 }; g.add(m); st.push([m, .8]) }
@@ -108,7 +108,7 @@
       grp.add(s); sw.push({ s, i, tg: tg.length ? tg[i % tg.length] : null, ang: R() * TAU, p0: new T.Vector3(), done: 0 }); mats.push(bm, gm);
     }
     R3.flash(x, y, 0xffd070, 8); shake(.5); F.burst(x, y, 12, 26, 220, .8, '#ffe27a', 220, 100);
-    const Tg = .8, Ts = .5, Tf = .45, Tt = Tg + Ts + Tf, pos = (sw_, t) => { const i = sw_.i, th = t * 4.6 - i * .4, u = F.ease3(clamp(t / Tg, 0, 1)), r = (92 - i * 1.3) * (.35 + .65 * u), h = 16 + (i * 5.2 + M.sin(t * 6 + i * .6) * 8) * u; return _v.set(M.cos(th) * r, h, M.sin(th) * r) };
+    const Tg = .8, Ts = .5, Tf = .45, Tt = Tg + Ts + Tf, pos = (sw_, t) => { const i = sw_.i, th = t * 4.6 - i * .4, u = F.ease3(clamp(t / Tg, 0, 1)), r = (68 - i * 1.0) * (.35 + .65 * u), h = 16 + (i * 5.2 + M.sin(t * 6 + i * .6) * 8) * u; return _v.set(M.cos(th) * r, h, M.sin(th) * r) };
     fx(grp, Tt, (u, t) => {
       const fade = clamp(M.min(t / .15, (Tt - t) / Tf), 0, 1);
       for (const w of sw) {
