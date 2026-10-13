@@ -246,7 +246,7 @@
       for (const sd of [-1, 1]) b.add(P_.oct, P.eye, sd * 2.6, H[1] + 1.2, H[2] + 5.4, 1.4, 1.1, 1.1, 0, 0, 0, true);
     }
   }
-  const SHAPES = { human, beast, ogre, golem, crab, blob, amphi, ghost };
+  const SHAPES = { human, beast, ogre, golem, crab, blob, amphi, ghost }; R3.SHAPES = SHAPES;   // Phase 22: r3d_fams.js đăng ký thêm họ quái
   function getArch(k) {
     let a = A.arch.get(k.key); if (a) return a;
     P_ = R3.prim(); let h = 7; for (let i = 0; i < k.key.length; i++) h = (h * 31 + k.key.charCodeAt(i)) | 0;
@@ -265,7 +265,7 @@
   /* nhóm riêng cho Elite / Mini Boss / Boss */
   function buildRig(e, k) {
     const a = { geo: null }, g = new T.Group(); P_ = R3.prim(); let h = 7; for (let i = 0; i < k.key.length; i++) h = (h * 31 + k.key.charCodeAt(i)) | 0;
-    const b = R3.Builder((h >>> 0) + 5), S = A.S; (SHAPES[k.shape] || human)(b, k, k.big || 1); if (k.big || e.boss || e.mb || e.el) embellish(b, k, e.boss ? 2 : e.mb ? 1.5 : 1); const geo = b.done();
+    const b = R3.Builder((h >>> 0) + 5), S = A.S; (SHAPES[k.shape] || human)(b, k, k.big || 1); if (!k.fam && (k.big || e.boss || e.mb || e.el)) embellish(b, k, e.boss ? 2 : e.mb ? 1.5 : 1); const geo = b.done();
     const body = new T.Group(); g.add(body);
     if (geo.lit) { const m = new T.Mesh(geo.lit, k.shape === 'ghost' ? new T.MeshLambertMaterial({ vertexColors: true, transparent: true, opacity: .8, depthWrite: false }) : new T.MeshLambertMaterial({ vertexColors: true })); m.castShadow = true; body.add(m); a.lit = m }
     if (geo.glow) { const m = new T.Mesh(geo.glow, new T.MeshBasicMaterial({ vertexColors: true })); body.add(m); a.glow = m }
@@ -273,7 +273,8 @@
     a.ring = runeDecal(col, 1, e.boss ? .85 : .65); g.add(a.ring); a.ring.position.y = 1.2;
     a.halo = glowSprite(new T.Color(col), e.boss ? 44 : e.mb ? 34 : 30, e.boss ? .45 : .3); a.halo.position.y = 18; g.add(a.halo);
     a.cry = []; if (k.big === 2) { for (let i = 0; i < 3 + (k.tier | 0); i++) { const c = new T.Mesh(P_.oct, new T.MeshBasicMaterial({ color: k.P.crys, fog: false })); c.scale.set(2.2, 4.4, 2.2); g.add(c); a.cry.push(c) } }
-    a.body = body; a.g = g; a.col = col; S.actG.add(g); return a;
+    a.body = body; a.g = g; a.col = col; S.actG.add(g); if (k.mbf && R3.mbParts) { try { R3.mbParts(a, e, k) } catch (er) { console.warn('[mb]', er); a.ms = null; a.parts = null; for (const m of [a.lit, a.glow]) if (m) m.visible = true } }   // Phase 22: mini-boss nhiều bộ phận
+    return a;
   }
   function rigAnim(a, e, k, S, G, dt) {
     const t = S.t, P = G.p, g = a.g, sc = (e.r / 11) * 1.18 * (e.boss ? 1.7 : e.mb ? 1.3 : 1) * (k.role && k.role.mini ? .85 : 1), age = A.first.has(e.id) ? S.t - A.first.get(e.id) : 9;
@@ -292,7 +293,8 @@
     for (let i = 0; i < a.cry.length; i++) { const an = t * .9 + i * TAU / a.cry.length, c = a.cry[i]; c.position.set(M.cos(an) * 21, 18 + M.sin(an * 2) * 3, M.sin(an) * 21); c.rotation.y = t * 2 + i }
     if ((e.boss || e.mb) && R3.emit && (S.q > 0) && M.random() < dt * (e.boss ? 38 : 16)) { const an = M.random() * TAU, rr = e.r * (.6 + M.random() * .9); R3.emit(e.x + M.cos(an) * rr, e.y + M.sin(an) * rr, 2, 0, 0, 55 + M.random() * 70, 1.1, e.boss ? (e.hp < e.mhp / 2 ? '#ff9a3a' : '#ff5a3a') : '#c46aff', -10) }
     const col = tel ? 1.7 : e.fl > 0 ? 3 : 1;
-    for (const m of [a.lit, a.glow]) if (m) { /* màu nhấp nháy: qua material.color của mesh */ m.material.color.setScalar(e.fl > 0 ? 3 : tel ? 1.5 : 1); if (tel && m === a.lit) m.material.color.setRGB(1.7, .6, .6) }
+    if (a.parts && R3.mbAnim) { try { R3.mbAnim(a, e, k, S, G, dt, sc) } catch (er) { a.parts = null; console.warn('[mbAnim]', er) } }
+    for (const m of a.ms || [a.lit, a.glow]) if (m) { /* màu nhấp nháy: qua material.color của mesh */ m.material.color.setScalar(e.fl > 0 ? 3 : tel ? 1.5 : 1); if (tel && (m === a.lit || m.userData.lit)) m.material.color.setRGB(1.7, .6, .6) }
   }
 
   const pos = new T.Vector3();
@@ -303,7 +305,8 @@
     for (const e of G.en) {
       if (e.dead && !e.boss) { /* chết trong khung này: vẫn vẽ tới khi reap */ }
       const dx = e.x - P.x, dy = e.y - P.y; if (dx * dx + dy * dy > cull2) { live.add(e.id); continue }
-      const k = MA && MA.skinFor ? MA.skinFor(e, G) : DEF_SK(e); live.add(e.id);
+      let k = MA && MA.skinFor ? MA.skinFor(e, G) : DEF_SK(e); if (R3.fam) k = R3.fam(k, e); live.add(e.id);   // Phase 22: họ quái riêng
+      
       if (!A.first.has(e.id)) { A.first.set(e.id, t); if (R3.fxSpawn) R3.fxSpawn(e, k) }
       const rigged = e.boss || e.mb || e.el;
       let snap = A.seen.get(e.id); if (!snap) { snap = { id: e.id, k, rigged: !!rigged }; A.seen.set(e.id, snap) }
@@ -313,11 +316,12 @@
       } else {
         const a = getArch(k); if (a.n >= 199) continue; const age = t - A.first.get(e.id), spn = ease(clamp(age / .35, 0, 1));
         const sc = snap.sc * spn, ph = t * 9 + e.id, mv = e.sp > 90 ? 1.3 : 1, tel = e.tel > 0, dash = e.dsh > 0, ghost = k.shape === 'ghost';
-        const hop = M.abs(M.sin(ph * mv)) * (ghost ? 1 : 2.4) * sc + (ghost ? 6 + M.sin(t * 3 + e.id) * 3 : 0);
-        const lean = tel ? -.18 : dash ? .34 : .06 * M.sin(ph * mv), fl = e.fl > 0, sq = tel ? 1 + .06 * M.sin(t * 40) : 1;
-        const wob = M.sin(ph * mv * .7) * .07;
+        const FM = k.fam && R3.FAMM ? R3.FAMM[k.fam] : null;   // chuyển động riêng theo họ quái
+        const hop = FM ? (M.abs(M.sin(ph * mv * FM.spd)) * FM.hop + FM.fly + M.sin(t * 3 + e.id) * FM.bob) * sc : M.abs(M.sin(ph * mv)) * (ghost ? 1 : 2.4) * sc + (ghost ? 6 + M.sin(t * 3 + e.id) * 3 : 0);
+        const lean = (tel ? -.18 : dash ? .34 : .06 * M.sin(ph * mv * (FM ? FM.spd : 1))) * (FM && !tel && !dash ? FM.lean : 1), fl = e.fl > 0, sq = tel ? 1 + .06 * M.sin(t * 40) : 1;
+        const wob = M.sin(ph * mv * .7) * .07 * (FM ? FM.wob : 1), flap = FM && FM.flap ? 1 + FM.flap * M.sin(t * 16 + e.id * 1.7) : 1;
         const r = fl ? 3 : tel ? 1.7 : 1, g = fl ? 3 : tel ? .6 : 1, bl = fl ? 3 : tel ? .6 : 1;
-        putInst(a, a.n++, e.x, R3.height(e.x, e.y) + hop, e.y, sc, snap.yaw, lean, wob, (fl ? 1.12 : 1) / (tel ? sq : 1) * (dash ? 1.1 : 1), (fl ? .9 : 1) * sq * (dash ? .86 : 1), r, g, bl);
+        putInst(a, a.n++, e.x, R3.height(e.x, e.y) + hop, e.y, sc, snap.yaw, lean, wob, (fl ? 1.12 : 1) / (tel ? sq : 1) * (dash ? 1.1 : 1) * flap, (fl ? .9 : 1) * sq * (dash ? .86 : 1), r, g, bl);
       }
     }
     // quái biến mất → hiệu ứng chết
@@ -332,7 +336,7 @@
       const d = A.dying[i]; d.t += dt; const u = clamp(d.t / d.T, 0, 1), sn = d.sn;
       if (sn.rig) {
         const a = sn.rig; a.g.position.y = R3.height(sn.x, sn.y) + u * (sn.boss ? 14 : 4); const s = sn.sc * (1 - ease(u) * .35); a.g.scale.set(s * (1 + u * .25), s * (1 - u * .85), s * (1 + u * .25)); a.g.rotation.y = sn.yaw + u * 2; a.ring.material.opacity *= .9; a.halo.material.opacity = (1 - u) * .6;
-        for (const m of [a.lit, a.glow]) if (m) { m.material.transparent = true; m.material.opacity = 1 - u; m.material.color.setScalar(1 + (1 - u) * 2) }
+        for (const m of a.ms || [a.lit, a.glow]) if (m) { m.material.transparent = true; m.material.opacity = 1 - u; m.material.color.setScalar(1 + (1 - u) * 2) }
         if (u >= 1) { disposeRig(a) }
       } else if (!sn.rig) {
         const a = getArch(sn.k); if (a.n < 199) { const s = sn.sc * (1 - ease(u) * .6); putInst(a, a.n++, sn.x, R3.height(sn.x, sn.y) + u * 6, sn.y, s, sn.yaw + u * 3, -u * .9, u * .6, 1 + u * .5, 1 - u * .9, 2.2 * (1 - u) + 1, 2.2 * (1 - u) + 1, 2.2 * (1 - u) + 1) }

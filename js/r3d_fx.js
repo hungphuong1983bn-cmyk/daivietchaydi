@@ -181,7 +181,7 @@
 
   /* ---------- vật rơi: vàng · EXP · bình hồi · CỘT SÁNG ---------- */
   const TIERS = {
-    L: { col: '#ffc446', core: '#fff3cf', h: 300, w: 12, item: 'chest' },
+    L: { col: '#d45aff', core: '#ffeaff', h: 300, w: 12, item: 'chest' },
     E: { col: '#50ffaa', core: '#e0fff0', h: 200, w: 8, item: 'orb' },
     R: { col: '#4a9bff', core: '#dcecff', h: 230, w: 9, item: 'gem' }
   };
@@ -195,17 +195,18 @@
   function updOrbs(S, G, dt) {
     const g = geos(), P = G.p, q = Q(), t = S.t;
     if (!F.coin) {
-      F.coin = new T.InstancedMesh(g.coin, new T.MeshLambertMaterial({ color: 0xf5c542, emissive: 0x6a4400 }), 320); F.exp = new T.InstancedMesh(g.oct, new T.MeshBasicMaterial({ color: 0x6ec6ff }), 220);
+      F.coin = new T.InstancedMesh(g.coin, new T.MeshLambertMaterial({ color: 0xf5c542, emissive: 0x6a4400 }), 320); F.exp = new T.InstancedMesh(g.oct, new T.MeshBasicMaterial({ color: 0xffffff }), 220);
       F.coin.frustumCulled = F.exp.frustumCulled = false; S.fxG.add(F.coin, F.exp); F.coin.count = F.exp.count = 0;
     }
     let nc = 0, ne = 0, nh = 0; const gold = [], big = [], heal = [];
     for (const o of G.orb) {
       const dx = o.x - P.x, dy = o.y - P.y; if (dx * dx + dy * dy > 1500 * 1500) continue;
       if (o.h) { heal.push(o); continue } const h0 = H(o.x, o.y);
-      if (o.g) { gold.push(o); if (nc < 320) { _e.set(0, t * 3 + o.x, 0); _q.setFromEuler(_e); _m.compose(_p.set(o.x, h0 + 9 + M.sin(t * 4 + o.y) * 1.6, o.y), _q, _s.set(5.2, 5.2, 5.2)); F.coin.setMatrixAt(nc++, _m) } }
-      else if (ne < 220) { const v = o.v || 1, s = v >= 20 ? 11 : 4.6 + M.min(2, v * .05); if (v >= 20) big.push(o); _e.set(t * 2, t * 3, 0); _q.setFromEuler(_e); _m.compose(_p.set(o.x, h0 + 10 + s * .3 + M.sin(t * 4 + o.x) * 1.4, o.y), _q, _s.set(s, s * 1.4, s)); F.exp.setMatrixAt(ne++, _m) }
+      const lp = R3.lootPop ? R3.lootPop(o, t) : { h: 0, s: 1 };   // Phase 22: nảy theo cung cùng quầng sáng
+      if (o.g) { gold.push(o); if (nc < 320) { _e.set(0, t * 3 + o.x, 0); _q.setFromEuler(_e); _m.compose(_p.set(o.x, h0 + 9 + lp.h + M.sin(t * 4 + o.y) * 1.6, o.y), _q, _s.set(5.8 * lp.s, 5.8 * lp.s, 5.8 * lp.s)); F.coin.setMatrixAt(nc++, _m) } }
+      else if (ne < 220) { const v = o.v || 1, s = (v >= 20 ? 11 : 5.4 + M.min(2.4, v * .06)) * lp.s; if (v >= 20) big.push(o); _e.set(t * 2, t * 3, 0); _q.setFromEuler(_e); _m.compose(_p.set(o.x, h0 + 10 + lp.h + s * .3 + M.sin(t * 4 + o.x) * 1.4, o.y), _q, _s.set(s, s * 1.4, s)); F.exp.setMatrixAt(ne, _m); if (R3.lootCol) F.exp.setColorAt(ne, R3.lootCol(o)); ne++ }
     }
-    F.coin.count = nc; F.exp.count = ne; F.coin.instanceMatrix.needsUpdate = F.exp.instanceMatrix.needsUpdate = true;
+    F.coin.count = nc; F.exp.count = ne; F.coin.instanceMatrix.needsUpdate = F.exp.instanceMatrix.needsUpdate = true; if (F.exp.instanceColor) F.exp.instanceColor.needsUpdate = true;
     // bình hồi
     const HL = pooled('heal', () => { const grp = new T.Group(), s = new T.Mesh(g.sph, addM(0x5dff9a, .9)); s.scale.setScalar(8); const a = new T.Mesh(g.box, new T.MeshBasicMaterial({ color: 0xffffff })); a.scale.set(3, 12, 3); const b = new T.Mesh(g.box, new T.MeshBasicMaterial({ color: 0xffffff })); b.scale.set(12, 3, 3); grp.add(s, a, b, R3.glowSprite(0x5dff9a, 44, .6)); return grp }, M.min(10, heal.length)); let hu = 0;
     for (const o of heal) { if (hu >= HL.a.length) break; const m = HL.a[hu++]; m.visible = true; m.position.set(o.x, H(o.x, o.y) + 16 + M.sin(t * 3 + o.x) * 3, o.y); m.rotation.y = t * 2 } for (let i = hu; i < HL.a.length; i++) HL.a[i].visible = false;
