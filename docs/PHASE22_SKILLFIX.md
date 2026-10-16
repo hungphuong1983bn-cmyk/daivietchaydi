@@ -27,3 +27,21 @@ Thêm `js/r3d_loot.js` (đọc `G.orb`, KHÔNG đổi logic nhặt/EXP/vàng). S
 Nhận biết: VÀNG = quầng vàng + tia lấp lánh xoay · EXP nhỏ (v<4) xanh lam · EXP vừa (4–19) chàm tím + tia · EXP lớn (≥20, tinh anh/boss) tím hồng + vòng lớn + tia + cột sáng · BÌNH HỒI xanh lục + tia (nhấp nháy khi sắp biến mất).
 Mỗi vật: quầng billboard cộng sáng + vòng nằm trên mặt đất nhịp thở + bóng tối nhẹ dưới chân (tăng tương phản trên nền sáng). Rơi: nảy theo cung + tia lửa + vòng sóng. Bị hút: vệt sáng. Nhặt: tóe sáng tại nhân vật. Chất lượng Thấp: chỉ quầng sáng (bỏ vòng đất, tia, bóng, tia lửa).
 Kiểm: 300 vật rơi, nhặt đúng (vàng cộng bình thường), không lỗi ở 3 mức chất lượng. Chi phí: +16–22% ms/khung với 300 vật (SwiftShader CPU, trường hợp cực đoan).
+
+## Bước 6 — Màn hình chính cao cấp
+Thêm `js/home_pro.js` (CSS ghi đè + dời `#hpn` xuống dưới sân khấu; KHÔNG đổi logic nút/dữ liệu). Sửa `js/heroshow.js` (neo hiệu ứng 2D theo chân/đầu mô hình 3D qua `R3.homeFeet`) và `js/r3d_home.js` (thêm `R3.homeFeet`). `index.html`: 1 script tag.
+Nguyên nhân lỗi cũ: thẻ thông tin tướng nằm đè lên nửa dưới nhân vật (che chân + kiếm); hiệu ứng 2D (tích tụ, lên cấp, đột phá) tính chân nhân vật theo chiều cao thẻ → lệch khỏi mô hình 3D khi bố cục đổi.
+Bố cục mới: thanh trên (avatar + tiền tệ dạng viên) → biểu ngữ chương → sân khấu nhân vật toàn thân + bệ sáng, 2 cột nút bên → thẻ tướng (dưới sân khấu) → chip nhanh → 5 ô chức năng (Trang bị, Võ công, Cửa hàng, Môn phái, Bí cảnh) → VÀO GIANG HỒ → thanh dưới. Bỏ nút trùng (Tướng/Túi có ở thanh dưới; Triệu hồi có ở cột phải); ẩn hàng ô trang bị (xem ở "Trang bị"). Co theo chiều cao: ≤760 ẩn chip + phiên bản; ≤660 ẩn biểu ngữ, chỉ số, nhãn nút.
+Kiểm: 390×844, 412×915, 360×640, 320×568; hiệu ứng star/realm bám đúng chân; Võ công/Cửa hàng mở-đóng; nút VÕ HỌC trong thẻ tướng đã dời vẫn hoạt động; Vào Giang Hồ vào trận; không lỗi JS.
+
+## Bước 7 — Hiệu ứng skill ôm sát địa hình + đẹp hơn
+Nguyên nhân bị "cắt trên mặt địa hình": vòng sóng, rune, vùng lửa/băng, vùng báo đòn là mặt phẳng đặt ở MỘT độ cao (độ cao tại tâm); địa hình chênh −28…+16 (núi/tuyết ×1.5) nên chỗ đồi nhô lên che mất một phần; `CircleGeometry` còn là 1 mặt quạt phẳng không thể uốn theo đồi.
+Sửa: thêm `js/r3d_drape.js` — bản đồ độ cao 160×160 (texture half-float, 2400 đơn vị quanh nhân vật, dựng từ `R3.height`, làm mới theo lát khi đi quá 420 đơn vị) + `R3.drape(mat)` vá vertex shader: đỉnh nằm sát mặt phẳng cục bộ (position.y<.6, pháp tuyến lên) được nâng/hạ theo độ cao địa hình tại chính đỉnh đó; cột sáng/mái vòm/cầu không đổi. Áp cho mọi vật liệu cộng sáng (`F.addM`), `runeDecal`, `nmesh` của skx. Chia nhỏ hình học: đĩa 56×12, vòng 72×2, rune 48×16, cung wuxia/skx nhiều đoạn bán kính. Vòng sóng nâng 1.6→2.2 + polygonOffset. Vùng sát thương (logic 2D) không đổi.
+Đẹp hơn: đĩa năng lượng dùng texture (lõi dịu, viền sáng, tan mềm) thay mảng phẳng; Long Thần Vạn Kiếm (ult): màu vàng kim giàu sắc, độ đục rune/cột/cung/mái vòm giảm để bớt trắng cháy.
+Kiểm (chương 8 Nam Quan – núi, 52° nghiêng): ult — rune thành vòng tròn liền mạch (bản cũ khuyết một mảng); vùng băng + lửa + thiên thạch + pháp trận đủ hình tròn; không lỗi JS; 120 quái 153 ms/khung (SwiftShader, không tăng).
+Giới hạn: bản đồ độ cao dùng texture đỉnh (WebGL2 — game đã yêu cầu); hiệu ứng nằm ngoài 1200 đơn vị quanh nhân vật không được ôm địa hình (không xuất hiện trong thực tế); chưa thử thiết bị thật.
+
+## Bước 8 — Tuyệt Ảnh / Quỷ Ảnh: bóng phân thân đúng hình nhân vật
+`js/r3d_wuxia.js`: `silGeo()` gộp mọi mesh đặc của rig chibi hiện tại thành 1 hình học (dựng 1 lần/tướng, ~50k đỉnh, dùng chung); `ghost()` dùng nó cho bóng phân thân: thân tím trong suốt (không cộng dồn mặt chồng nhau) + viền sáng BackSide + quầng sáng; chất lượng Thấp (q=0) giữ bóng hình trụ cũ. Bỏ 2 tia chéo trên bóng hình người. `W.ghost` xuất để kiểm thử.
+Kiểm (chương 8 núi, chương 30 hang): Kiếm Phong 5 vệt xanh có đầu sóng; Tuyệt Ảnh hàng 5 bóng nhân vật tím có kiếm dọc đường lướt, đọc rõ cả nền sáng lẫn tối; skill đủ khi đông hiệu ứng; không lỗi JS; 171 ms/khung (SwiftShader, 120 quái).
+Chưa kiểm riêng: Quỷ Ảnh (cùng hàm ghost) khi kết thúc vòng chém; tư thế bóng là tư thế đứng của rig (chưa có tư thế lao).
