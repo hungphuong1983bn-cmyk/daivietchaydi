@@ -31,7 +31,7 @@
   }
   R3.runeTex = runeTex;
   function runeDecal(col, rad, op) {
-    const g = new T.CircleGeometry(1, 32); g.rotateX(-PI / 2); const m = new T.Mesh(g, new T.MeshBasicMaterial({ map: runeTex(col), transparent: true, opacity: op == null ? .8 : op, blending: T.AdditiveBlending, depthWrite: false, fog: false, polygonOffset: true, polygonOffsetFactor: -3, polygonOffsetUnits: -3 }));
+    const g = new T.RingGeometry(.001, 1, 48, 16); g.rotateX(-PI / 2); const mt = new T.MeshBasicMaterial({ map: runeTex(col), transparent: true, opacity: op == null ? .8 : op, blending: T.AdditiveBlending, depthWrite: false, fog: false, polygonOffset: true, polygonOffsetFactor: -3, polygonOffsetUnits: -3 }); const m = new T.Mesh(g, R3.drape ? R3.drape(mt) : mt);   // Phase 22: chia nhỏ + ôm địa hình
     m.scale.set(rad, 1, rad); m.renderOrder = 3; return m;
   }
   R3.runeDecal = runeDecal;

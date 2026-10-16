@@ -245,7 +245,10 @@ function frame(now) {
   const main = (d && d.palette.main) || o.h.col || '#c9a020', A = AMB[ak] || { c: main, d: [0, -1], sp: .1, sh: 'mote' };
   if (ak !== ambK) { ambK = ak; ps.length = 0; if (tint) tint.style.setProperty('--ha', acol) }
   /* khung hiển thị: tướng đứng trên bảng thông tin, không bị che */
-  const ph = pn.offsetHeight || 140, free = M.max(90, H - ph - 4), fy = free - 4, S = M.min(free / 92, W / 118) * (RM ? 1 : 1);
+  const hStage = pn.parentNode && pn.parentNode.id === 'hstage';   // Phase 22: thẻ tướng có thể đã dời xuống dưới sân khấu (home_pro.js)
+  let ph = hStage ? (pn.offsetHeight || 140) : 0, free = M.max(90, H - ph - 4), fy = free - 4, S = M.min(free / 92, W / 118) * (RM ? 1 : 1);
+  const hf = window.DV_R3D && DV_R3D.homeFeet ? DV_R3D.homeFeet() : null;   // bám đúng chân/đầu của mô hình 3D
+  if (hf && isFinite(hf.fy) && isFinite(hf.ty)) { fy = M.max(60, M.min(H - 2, hf.fy - r.top)); free = fy + 4; S = M.max(.6, (hf.fy - hf.ty) / 88) }
   const u = seq ? seq.t / seq.T : 0, cu = seq ? (seq.hold ? clamp(u / seq.hold, 0, 1) : 1) : 0, bu = seq && seq.hold ? clamp((u - seq.hold) / (1 - seq.hold), 0, .999) : seq ? clamp(u, 0, .999) : 0;
   anc = { x: r.left - menu.getBoundingClientRect().left + W / 2, y: r.top - menu.getBoundingClientRect().top + fy - 30 * S, fy: r.top - menu.getBoundingClientRect().top + fy, S };
   zoom += ((seq && seq.k === 'realm' && u < .85 && !RM ? 1.2 : 1) - zoom) * M.min(1, dt * 4.5);

@@ -23,8 +23,8 @@
   function geos() {
     if (F.geo.ring) return F.geo;
     const g = F.geo;
-    g.ring = new T.RingGeometry(.86, 1, 56); g.ring.rotateX(-PI / 2);
-    g.disc = new T.CircleGeometry(1, 40); g.disc.rotateX(-PI / 2);
+    g.ring = new T.RingGeometry(.86, 1, 72, 2); g.ring.rotateX(-PI / 2);   // Phase 22: nhiều đoạn để ôm địa hình
+    g.disc = new T.RingGeometry(.0001, 1, 56, 12); g.disc.rotateX(-PI / 2);   // chia vòng đồng tâm: ôm địa hình (CircleGeometry cũ chỉ có 1 mặt quạt phẳng)
     g.cyl = new T.CylinderGeometry(1, 1, 1, 14, 1, true); g.cyl.translate(0, .5, 0);
     g.cylS = new T.CylinderGeometry(1, 1, 1, 6, 1); g.cylS.translate(0, .5, 0);
     g.cone = new T.ConeGeometry(1, 1, 6); g.cone.translate(0, .5, 0);
@@ -36,12 +36,18 @@
     g.coin = new T.CylinderGeometry(1, 1, .28, 12); g.coin.rotateX(PI / 2);
     return g;
   }
+  function discTex() {   // Phase 22: đĩa năng lượng — lõi dịu, viền sáng, tan mềm (không còn mảng phẳng đặc)
+    if (F.tex.disc) return F.tex.disc; const c = document.createElement('canvas'); c.width = c.height = 128; const g = c.getContext('2d'), gr = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+    gr.addColorStop(0, 'rgba(255,255,255,.10)'); gr.addColorStop(.55, 'rgba(255,255,255,.22)'); gr.addColorStop(.84, 'rgba(255,255,255,.85)'); gr.addColorStop(.94, 'rgba(255,255,255,.35)'); gr.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = gr; g.fillRect(0, 0, 128, 128);
+    const t = new T.CanvasTexture(c); t.colorSpace = T.SRGBColorSpace; return F.tex.disc = t;
+  }
+  R3.discTex = discTex;
   function beamTex() {
     if (F.tex.beam) return F.tex.beam; const c = document.createElement('canvas'); c.width = 8; c.height = 128; const g = c.getContext('2d');
     const gr = g.createLinearGradient(0, 128, 0, 0); gr.addColorStop(0, 'rgba(255,255,255,1)'); gr.addColorStop(.35, 'rgba(255,255,255,.6)'); gr.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = gr; g.fillRect(0, 0, 8, 128);
     const t = new T.CanvasTexture(c); t.colorSpace = T.SRGBColorSpace; return F.tex.beam = t;
   }
-  const addM = (col, op, map, side) => new T.MeshBasicMaterial({ color: col, transparent: true, opacity: op == null ? 1 : op, blending: T.AdditiveBlending, depthWrite: false, fog: false, map: map || null, side: side || T.FrontSide });
+  const addM = (col, op, map, side) => { const m = new T.MeshBasicMaterial({ color: col, transparent: true, opacity: op == null ? 1 : op, blending: T.AdditiveBlending, depthWrite: false, fog: false, map: map || null, side: side || T.FrontSide }); return R3.drape ? R3.drape(m) : m };   // Phase 22: ôm địa hình
   function put(mesh) { F.S.fxG.add(mesh); return mesh }
   function kill(o) { if (o.parent) o.parent.remove(o); o.traverse(x => { if (x.material && x.material.dispose) x.material.dispose() }) }
   function add(fn) { F.list.push(fn); return fn }
@@ -76,8 +82,8 @@
 
   /* ---------- hiệu ứng dựng sẵn ---------- */
   function ring(x, y, Rr, T_, col, thick, delay) {   // vòng sóng lan trên mặt đất
-    const g = geos(), m = new T.Mesh(g.ring, addM(C(col), 1)); m.position.set(x, H(x, y) + 1.6, y); m.renderOrder = 4; put(m); let t = -(delay || 0);
-    const disc = new T.Mesh(g.disc, addM(C(col), .15)); disc.position.copy(m.position); disc.renderOrder = 3; put(disc);
+    const g = geos(), m = new T.Mesh(g.ring, addM(C(col), 1)); m.position.set(x, H(x, y) + 2.2, y); m.renderOrder = 4; put(m); let t = -(delay || 0);
+    const disc = new T.Mesh(g.disc, addM(C(col), .5, discTex())); disc.position.copy(m.position); disc.renderOrder = 3; put(disc);
     return add(dt => { t += dt; if (t < 0) { m.visible = disc.visible = false; return true } m.visible = disc.visible = true; const u = clamp(t / T_, 0, 1), s = Rr * (.12 + .88 * ease(u)); m.scale.set(s, 1, s); disc.scale.set(s, 1, s); m.material.opacity = (1 - u) * .95; disc.material.opacity = (1 - u) * .22; if (u >= 1) { kill(m); kill(disc); return false } return true });
   }
   function pillar(x, y, h, rad, col, T_, op) {   // cột sáng ngắn hạn
@@ -117,10 +123,10 @@
   }
   function ult(P) {   // Tuyệt kỹ: pháp trận 2 lớp xoay + hoa sen + trụ sáng + sóng + vòng kiếm
     const g = geos(), q = Q(), Rr = 310, T_ = q === 0 ? 1.2 : 1.9, x = P.x, y = P.y, grp = new T.Group(); grp.position.set(x, H(x, y), y); put(grp);
-    const r1 = R3.runeDecal('#ffd978', Rr, .9), r2 = R3.runeDecal('#fff2b8', Rr * .62, .8); r1.position.y = 2; r2.position.y = 2.6; grp.add(r1, r2);
-    const pil = []; const NP_ = [6, 12, 20][q]; for (let i = 0; i < NP_; i++) { const a = i / NP_ * TAU, m = new T.Mesh(g.cyl, addM(C('#ffd070'), .8, beamTex())); m.position.set(M.cos(a) * Rr * .86, 0, M.sin(a) * Rr * .86); m.userData.d = i / NP_; grp.add(m); pil.push(m) }
-    const arcs = []; for (let i = 0; i < 3; i++) { const m = new T.Mesh(g.arc, addM(C('#fff0b0'), .9)); m.rotation.x = -PI / 2; m.position.y = 34 + i * 10; grp.add(m); arcs.push(m) }
-    ring(x, y, Rr * 1.15, .9, '#ffe27a'); ring(x, y, Rr, 1.2, '#ffc050', 1, .15); lotus(x, y, 120, T_ * .8, '#ffd070', 12, .1); flashDome(x, y, Rr * .5, .6, '#fff0b0', .6); R3.flash(x, y, 0xffe08a, 8);
+    const r1 = R3.runeDecal('#ffc94a', Rr, .6), r2 = R3.runeDecal('#ffdf8a', Rr * .62, .5); r1.position.y = 2; r2.position.y = 2.6; grp.add(r1, r2);
+    const pil = []; const NP_ = [6, 12, 20][q]; for (let i = 0; i < NP_; i++) { const a = i / NP_ * TAU, m = new T.Mesh(g.cyl, addM(C('#ffc860'), .62, beamTex())); m.position.set(M.cos(a) * Rr * .86, 0, M.sin(a) * Rr * .86); m.userData.d = i / NP_; grp.add(m); pil.push(m) }
+    const arcs = []; for (let i = 0; i < 3; i++) { const m = new T.Mesh(g.arc, addM(C('#ffd67a'), .7)); m.rotation.x = -PI / 2; m.position.y = 34 + i * 10; grp.add(m); arcs.push(m) }
+    ring(x, y, Rr * 1.15, .9, '#ffe27a'); ring(x, y, Rr, 1.2, '#ffc050', 1, .15); lotus(x, y, 120, T_ * .8, '#ffd070', 12, .1); flashDome(x, y, Rr * .5, .6, '#ffd070', .45); R3.flash(x, y, 0xffe08a, 8);
     burst(x, y, 10, 40, 260, 1, '#ffe27a', 220); let t = 0;
     return add(dt => {
       t += dt; const u = clamp(t / T_, 0, 1), op = u < .12 ? u / .12 : u > .7 ? (1 - u) / .3 : 1, o = ease3(M.min(1, u * 3));

@@ -29,7 +29,7 @@
   /* hình cung phẳng (nằm trên mặt đất, hướng chính = +Z cục bộ), lưu đệm */
   function sector(inner, span) {
     const k = inner + '|' + span; if (W.geo[k]) return W.geo[k];
-    const g = new T.RingGeometry(inner, 1, 44, 1, -PI / 2 - span / 2, span); g.rotateX(-PI / 2); return W.geo[k] = g;
+    const g = new T.RingGeometry(inner, 1, 44, 6, -PI / 2 - span / 2, span); g.rotateX(-PI / 2); return W.geo[k] = g;
   }
   function vsector(span) {   // cung đứng (mặt phẳng chứa hướng tiến + trục dọc)
     const k = 'v' + span; if (W.geo[k]) return W.geo[k];
@@ -125,7 +125,20 @@
     });
   }
   /* ====================== KỸ NĂNG 3 · TUYỆT ẢNH (ảnh phân thân) ====================== */
+  /* Phase 22: bóng phân thân = ĐÚNG HÌNH nhân vật hiện tại (gộp mọi mesh đặc của rig chibi thành 1 hình học, dựng 1 lần/tướng) */
+  function silGeo() {
+    const A = R3.A, h = A && A.hero; if (!h || !h.g) return null; if (W.sil && W.sil.key === h) return W.sil.geo;
+    h.g.updateMatrixWorld(true); const inv = new T.Matrix4().copy(h.g.matrixWorld).invert(), pos = [], v = new T.Vector3(), mat = new T.Matrix4();
+    h.g.traverse(o => { if (!o.isMesh || !o.geometry || !o.visible) return; const m = o.material; if (!m || m.blending === T.AdditiveBlending || (m.transparent && m.opacity < .9)) return;
+      let g = o.geometry; if (g.index) g = g.toNonIndexed(); const p = g.attributes.position; mat.multiplyMatrices(inv, o.matrixWorld); for (let i = 0; i < p.count; i++) { v.fromBufferAttribute(p, i).applyMatrix4(mat); pos.push(v.x, v.y, v.z) } });
+    if (pos.length < 900) return null; const geo = new T.BufferGeometry(); geo.setAttribute('position', new T.Float32BufferAttribute(pos, 3)); W.sil = { key: h, geo }; return geo;
+  }
   function ghost(col, dark) {
+    const sg = Q() > 0 ? silGeo() : null;
+    if (sg) {   // bóng hình người: lớp thân màu + lớp viền sáng lớn hơn một chút
+      const g = new T.Group(), b = new T.Mesh(sg, new T.MeshBasicMaterial({ color: new T.Color(col).lerp(new T.Color('#ffffff'), .12), transparent: true, opacity: .66, depthWrite: true, fog: false })), o = new T.Mesh(sg, AM('#d8b8ff', .55, T.BackSide)); b.scale.setScalar(1.3); o.scale.setScalar(1.42); b.renderOrder = 6; o.renderOrder = 5; g.add(b, o); g.add(R3.glowSprite(new T.Color(col).getHex(), 52, .42));   // thân đặc (không cộng dồn các mặt chồng nhau) + viền sáng phía sau
+      return g;
+    }
     const g = new T.Group(), c = AM(col, .75), b = new T.Mesh(F.geos().cylS, c); b.scale.set(6, 15, 4); b.position.y = 4; g.add(b);
     const hd = new T.Mesh(F.geos().sph, c); hd.scale.setScalar(5.4); hd.position.y = 24; g.add(hd);
     const sc = new T.Mesh(F.geos().box, AM('#ff5a8a', .8)); sc.scale.set(8, 1.8, 3); sc.position.y = 19; g.add(sc);
@@ -134,10 +147,11 @@
     if (dark) { const d = new T.Mesh(F.geos().cylS, new T.MeshBasicMaterial({ color: 0x14062a, transparent: true, opacity: .5, depthWrite: false, fog: false })); d.scale.set(7, 17, 5); d.position.y = 4; g.add(d) }
     return g;
   }
+  W.ghost = ghost;   // (kiểm thử) bóng phân thân
   function afterimage(e) {
     if (skillBusy()) return; const G = W.G, x = e.x, y = e.y, g = ghost('#b070ff', 1), d = e.d || 0, dur = .55;
     g.position.set(x, H(x, y), y); g.rotation.y = (G && G.p && G.p.face < 0) ? -PI / 2 : PI / 2; g.visible = false; let t0 = -d;
-    const cross = []; for (const sg of [-1, 1]) { const m = new T.Mesh(F.geos().cone, AM('#e6ccff', .9)); m.scale.set(2, 40, 2); m.rotation.z = sg * .9; m.position.y = 18; g.add(m); cross.push([m, .9]) }
+    if (!(Q() > 0 && W.sil)) for (const sg of [-1, 1]) { const m = new T.Mesh(F.geos().cone, AM('#e6ccff', .9)); m.scale.set(2, 40, 2); m.rotation.z = sg * .9; m.position.y = 18; g.add(m) }
     fx(g, dur + d, (u, t) => { const k = clamp((t - d) / dur, 0, 1); g.visible = t >= d; g.position.y = H(x, y) + k * 6; g.scale.setScalar(1 + k * .12); g.traverse(o => { if (o.material && o.userData.k0 == null) o.userData.k0 = o.material.opacity; if (o.material) o.material.opacity = o.userData.k0 * (1 - k) }); if (t >= d && !g.userData.s) { g.userData.s = 1; F.burst(x, y, 18, 8, 120, .5, '#d9b8ff', 90, 60); F.ring(x, y, 26, .3, '#b070ff') } });
   }
   /* ====================== KỸ NĂNG 4 · THIÊN HỎA ====================== */
@@ -225,7 +239,7 @@
         w('cast', (k, x, y, a, ev) => { if (k === 'kiem') combo(x, y, a, ev) }); w('onHit', (e, src, cr) => impact(e, src, cr)); w('ult', P => dragonSwords(P));
       }
     },
-    begin(S, G) { W.G = G; W.step = 0; W.castT = W.last = -9; W.grounds = 0; W.imp = 0; for (const s of W.sig.values()) { kill(s.rn); kill(s.rn2) } W.sig.clear(); for (const d of W.ice.values()) kill(d.grp); W.ice.clear(); for (const s of W.shd.values()) kill(s.grp); W.shd.clear(); W.st.fz.length = 0; W.st.t = 0 },
+    begin(S, G) { W.G = G; W.sil = null; W.step = 0; W.castT = W.last = -9; W.grounds = 0; W.imp = 0; for (const s of W.sig.values()) { kill(s.rn); kill(s.rn2) } W.sig.clear(); for (const d of W.ice.values()) kill(d.grp); W.ice.clear(); for (const s of W.shd.values()) kill(s.grp); W.shd.clear(); W.st.fz.length = 0; W.st.t = 0 },
     update(S, G, dt) {
       W.G = G; W.imp = 0; if (!G || !G.p) return;
       try { bladeStreaks(G); meteorSigil(G); iceDragons(G); shadowClones(G); statuses(G, dt) } catch (e) { console.warn('[wux upd]', e) }

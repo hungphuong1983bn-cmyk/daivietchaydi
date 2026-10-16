@@ -122,6 +122,14 @@
     Hm.cam.setViewOffset(Hm.W, Hm.H, dx, dy, Hm.W, Hm.H); Hm.cam.updateProjectionMatrix();
   }
   R3.homeLayout = () => { if (Hm.on) layout() };
+  /* Phase 22: vị trí chân/đầu nhân vật 3D trên màn hình (toạ độ viewport) để hiệu ứng 2D của heroshow.js bám đúng người */
+  const _hv = new T.Vector3();
+  R3.homeFeet = () => {
+    if (!Hm.on || !Hm.hero || !Hm.cam) return null; const el = R3.S.host.cv, b = el.getBoundingClientRect(); if (!b.width) return null;
+    const prj = (x, y, z) => { _hv.set(x, y, z).project(Hm.cam); return { x: (_hv.x * .5 + .5) * b.width + b.left, y: (-_hv.y * .5 + .5) * b.height + b.top } };
+    Hm.hero.g.updateMatrixWorld(true); const hd = Hm.hero.head || Hm.hero.g, bb = new T.Box3().setFromObject(hd), f = prj(0, 0, 0), t = prj(0, bb.max.y, 0);
+    return { x: f.x, fy: f.y, ty: t.y };
+  };
 
   R3.homeBegin = function () {
     if (!R3.enabled()) return false; const S = R3.S; if (!R3.initOK()) return false;

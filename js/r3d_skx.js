@@ -11,7 +11,7 @@
   let lathe = null;
   const Q = () => F.S ? F.S.q : 1;
   const mesh = (geo, col, op, map) => new T.Mesh(geo, F.addM(col, op, map));
-  const nmesh = (geo, col, op) => new T.Mesh(geo, new T.MeshBasicMaterial({ color: col, transparent: true, opacity: op, depthWrite: false, fog: false }));
+  const nmesh = (geo, col, op) => { const mt = new T.MeshBasicMaterial({ color: col, transparent: true, opacity: op, depthWrite: false, fog: false }); return new T.Mesh(geo, R3.drape ? R3.drape(mt) : mt) };
 
   /* ---------- dựng từng loại ---------- */
   function mkFire(o) {
@@ -132,7 +132,7 @@
       case 'fireboom': F.boom(x, y, r); F.ring(x, y, r * .6, .5, '#ffe27a', 1, .05); F.burst(x, y, 12, 14, r * 1.6, .8, '#ffd070', 200, 120); break;
       case 'meteor': F.boom(x, y, r * 1.2); F.ring(x, y, r * 1.6, .6, '#ff5a2a'); F.flashDome(x, y, r * 1.1, .5, '#ffcf80', .6); F.burst(x, y, 6, 26, r * 2.2, .9, '#5a4a40', 140, 160); F.pillar(x, y, 190, r * .3, '#ff9a3a', .5, .7); R3.flash(x, y, 0xff9a40, 7); break;
       case 'sword': F.ring(x, y, r * 1.2, .6, '#ffe9a0'); F.ring(x, y, r * .7, .5, '#fff', 1, .06); F.ring(x, y, r * 1.8, .8, '#ffd070', 1, .12); F.pillar(x, y, 340, r * .25, '#fff0c0', .6, .9); F.flashDome(x, y, r, .55, '#ffe9a0', .65); F.burst(x, y, 10, 34, r * 2.4, .9, '#ffe9a0', 220, 160); R3.flash(x, y, 0xffe9a0, 9); break;
-      case 'arc': { const sp = e.span || 2, geo = new T.RingGeometry(.78, 1, 40, 1, -(e.a || 0) - sp / 2, sp); geo.rotateX(-PI / 2); const m = new T.Mesh(geo, F.addM(F.C(e.col || "#ffffff"), .6, null, T.DoubleSide)); m.position.set(x, H(x, y) + 3, y); m.renderOrder = 5; F.put(m); let t = 0;
+      case 'arc': { const sp = e.span || 2, geo = new T.RingGeometry(.78, 1, 40, 3, -(e.a || 0) - sp / 2, sp); geo.rotateX(-PI / 2); const m = new T.Mesh(geo, F.addM(F.C(e.col || "#ffffff"), .6, null, T.DoubleSide)); m.position.set(x, H(x, y) + 3, y); m.renderOrder = 5; F.put(m); let t = 0;
         F.add(dt => { t += dt; const u = clamp(t / .38, 0, 1), k = r * (.55 + .45 * F.ease(u)); m.scale.set(k, 1, k); if (e.spin) m.rotation.y = u * 6.28 * 1.5; m.material.opacity = (1 - u) * .6; if (u >= 1) { F.kill(m); geo.dispose(); return false } return true });
         F.ring(x, y, r * .9, .35, e.col || '#ffffff'); F.burst(x, y, 8, 10, r * 1.6, .4, e.col || '#ffffff', 60); break }
       case 'cmd': F.ring(x, y, r, .6, e.col || '#ffd070'); F.ring(x, y, r * .6, .5, '#ffffff', 1, .06); F.pillar(x, y, 140, r * .22, e.col || '#ffd070', .6, .6); F.burst(x, y, 6, 10, r * 1.2, .6, e.col || '#ffd070', 90); break;
